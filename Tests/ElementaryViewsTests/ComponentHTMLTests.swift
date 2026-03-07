@@ -158,4 +158,43 @@ struct ComponentHTMLTests {
         let html = input(.type(.password), .class(cls), .placeholder("Password"))
         HTMLExpect(html, toBe: #"<input type="password" class="flex-1 border border-gray-200 rounded px-3 py-1.5 text-sm " placeholder="Password">"#)
     }
+
+    // MARK: - Slider
+
+    @Test func sliderDefaultRange() {
+        // Slider renders input type=range with min/max/step
+        let html = input(
+            .type(.range),
+            .class("w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-blue-500"),
+            .value("50.0"),
+            .custom(name: "min", value: "0.0"),
+            .custom(name: "max", value: "100.0"),
+            .custom(name: "step", value: "1.0")
+        )
+        HTMLExpect(html, toBe: #"<input type="range" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-blue-500" value="50.0" min="0.0" max="100.0" step="1.0">"#)
+    }
+
+    // MARK: - ProgressView
+
+    @Test func progressViewStructure() {
+        // ProgressView renders a container div with a colored inner bar
+        let html = div(.class("w-full bg-gray-200 rounded-full h-2.5 overflow-hidden")) {
+            div(
+                .class("bg-blue-500 h-2.5 rounded-full transition-all duration-300"),
+                .style("width: 75.0%")
+            ) { "" }
+        }
+        HTMLExpect(html, toBe: #"<div class="w-full bg-gray-200 rounded-full h-2.5 overflow-hidden"><div class="bg-blue-500 h-2.5 rounded-full transition-all duration-300" style="width: 75.0%"></div></div>"#)
+    }
+
+    // MARK: - TextEditor
+
+    @Test func textEditorStructure() {
+        let border = CSSBorderInfo(color: .gray_200)
+        let padding = CSSPadding()
+        let font = CSSFontInfo()
+        let cls = "w-full resize-y \(border.css) \(padding.css) \(font.css) "
+        let html = textarea(.class(cls), .custom(name: "rows", value: "4"), .placeholder("Enter text")) { "content" }
+        HTMLExpect(html, toBe: #"<textarea class="w-full resize-y border border-gray-200 rounded px-3 py-1.5 text-sm " rows="4" placeholder="Enter text">content</textarea>"#)
+    }
 }
