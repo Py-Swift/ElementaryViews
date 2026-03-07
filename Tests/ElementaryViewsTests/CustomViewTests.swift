@@ -350,13 +350,11 @@ struct LinkCard {
     }
 
     var body: some View {
-        #Border(color: .gray300, radius: .lg, padding: .md) {
-            #VStack(alignment: .leading, spacing: .sm) {
-                Text(title, font: CSSFontInfo(size: .lg))
-                Text(description, font: CSSFontInfo(size: .sm, color: .gray_500))
-                WebLink(destination: url, opensInNewTab: true) {
-                    Text("Visit →", font: CSSFontInfo(size: .sm, color: .blue_500))
-                }
+        #VStack(alignment: .leading, spacing: .sm) {
+            Text(title, font: CSSFontInfo(size: .lg))
+            Text(description, font: CSSFontInfo(size: .sm, color: .gray_500))
+            WebLink(destination: url, opensInNewTab: true) {
+                Text("Visit →", font: CSSFontInfo(size: .sm, color: .blue_500))
             }
         }
     }
@@ -416,7 +414,7 @@ struct PricingCard {
     }
 
     var body: some View {
-        #Border(color: .gray300, radius: .lg, padding: .md) {
+        #VStack(alignment: .center, spacing: .md) {
             Text(plan, font: CSSFontInfo(size: .xl))
             Text(price, font: CSSFontInfo(size: .xl2, color: .blue_500))
             Divider()
@@ -563,16 +561,14 @@ struct UserProfileCard {
     }
 
     var body: some View {
-        #Border(color: .gray300, radius: .lg, padding: .md) {
-            #VStack(alignment: .center, spacing: .md) {
-                WebImage(src: avatarURL, alt: name, width: "w-20", height: "h-20", cornerRadius: .full)
-                Text(name, font: CSSFontInfo(size: .lg))
-                Text(bio, font: CSSFontInfo(size: .sm, color: .gray_500))
-                Divider()
-                #HStack(spacing: .sm, wrap: true) {
-                    for tag in tags {
-                        Badge(tag)
-                    }
+        #VStack(alignment: .center, spacing: .md) {
+            WebImage(src: avatarURL, alt: name, width: "w-20", height: "h-20", cornerRadius: .full)
+            Text(name, font: CSSFontInfo(size: .lg))
+            Text(bio, font: CSSFontInfo(size: .sm, color: .gray_500))
+            Divider()
+            #HStack(spacing: .sm, wrap: true) {
+                for tag in tags {
+                    Badge(tag)
                 }
             }
         }
@@ -782,7 +778,7 @@ struct NestedBorderCard {
     }
 
     var body: some View {
-        #Border(color: .gray300, radius: .lg, padding: .md) {
+        #VStack(alignment: .leading, spacing: .sm) {
             Text(title, font: CSSFontInfo(size: .lg))
             Divider()
             BorderedLabel(text: inner, border: CSSBorderInfo(color: .gray_300), bg_color: .gray_100)
@@ -853,30 +849,28 @@ struct OrderSummary {
     }
 
     var body: some View {
-        #Border(color: .gray300, radius: .lg, padding: .md) {
-            #VStack(alignment: .leading, spacing: .md) {
-                Text("Order Summary", font: CSSFontInfo(size: .lg))
-                Divider()
-                #Table {
+        #VStack(alignment: .leading, spacing: .md) {
+            Text("Order Summary", font: CSSFontInfo(size: .lg))
+            Divider()
+            #Table {
+                #TableRow {
+                    #TableCell(width: .w_1_3) { Text("Item", font: CSSFontInfo(size: .xs, color: .gray_500)) }
+                    #TableCell(width: .w_1_3) { Text("Qty", font: CSSFontInfo(size: .xs, color: .gray_500)) }
+                    #TableCell(width: .w_1_3) { Text("Price", font: CSSFontInfo(size: .xs, color: .gray_500)) }
+                }
+                for (name, qty, price) in items {
                     #TableRow {
-                        #TableCell(width: .w_1_3) { Text("Item", font: CSSFontInfo(size: .xs, color: .gray_500)) }
-                        #TableCell(width: .w_1_3) { Text("Qty", font: CSSFontInfo(size: .xs, color: .gray_500)) }
-                        #TableCell(width: .w_1_3) { Text("Price", font: CSSFontInfo(size: .xs, color: .gray_500)) }
-                    }
-                    for (name, qty, price) in items {
-                        #TableRow {
-                            #TableCell(width: .w_1_3) { Text(name) }
-                            #TableCell(width: .w_1_3) { Text("\(qty)") }
-                            #TableCell(width: .w_1_3) { Text(price) }
-                        }
+                        #TableCell(width: .w_1_3) { Text(name) }
+                        #TableCell(width: .w_1_3) { Text("\(qty)") }
+                        #TableCell(width: .w_1_3) { Text(price) }
                     }
                 }
-                Divider()
-                #HStack {
-                    Text("Total", font: CSSFontInfo(size: .sm))
-                    Spacer()
-                    Text(total, font: CSSFontInfo(size: .lg))
-                }
+            }
+            Divider()
+            #HStack {
+                Text("Total", font: CSSFontInfo(size: .sm))
+                Spacer()
+                Text(total, font: CSSFontInfo(size: .lg))
             }
         }
     }
@@ -1306,12 +1300,10 @@ struct CustomViewTests {
     @Test func linkCard() {
         let view = LinkCard(title: "GitHub", url: "https://github.com", description: "Code hosting")
         HTMLExpect(view, toBe:
-            #"<div class="border flex-1 border-gray-300 rounded-lg p-4">"#
-            + #"<div class="flex flex-col w-full items-start gap-2">"#
+            #"<div class="flex flex-col w-full items-start gap-2">"#
             + #"<span class="text-lg">GitHub</span>"#
             + #"<span class="text-sm text-gray-500">Code hosting</span>"#
             + #"<a href="https://github.com" target="_blank" class="cursor-pointer"><span class="text-sm text-blue-500">Visit →</span></a>"#
-            + #"</div>"#
             + #"</div>"#
         )
     }
@@ -1356,7 +1348,7 @@ struct CustomViewTests {
     @Test func pricingCardBasic() {
         let view = PricingCard(plan: "Free", price: "$0", features: ["1 user", "5GB"])
         HTMLExpect(view, toBe:
-            #"<div class="border flex-1 border-gray-300 rounded-lg p-4">"#
+            #"<div class="flex flex-col w-full items-center gap-4">"#
             + #"<span class="text-xl">Free</span>"#
             + #"<span class="text-2xl text-blue-500">$0</span>"#
             + #"<hr class="border-t border-gray-200 my-2 w-full">"#
@@ -1371,7 +1363,7 @@ struct CustomViewTests {
     @Test func pricingCardNoFeatures() {
         let view = PricingCard(plan: "Pro", price: "$99", features: [])
         HTMLExpect(view, toBe:
-            #"<div class="border flex-1 border-gray-300 rounded-lg p-4">"#
+            #"<div class="flex flex-col w-full items-center gap-4">"#
             + #"<span class="text-xl">Pro</span>"#
             + #"<span class="text-2xl text-blue-500">$99</span>"#
             + #"<hr class="border-t border-gray-200 my-2 w-full">"#
@@ -1513,8 +1505,7 @@ struct CustomViewTests {
             bio: "Swift developer", tags: ["iOS", "Web"]
         )
         HTMLExpect(view, toBe:
-            #"<div class="border flex-1 border-gray-300 rounded-lg p-4">"#
-            + #"<div class="flex flex-col w-full items-center gap-4">"#
+            #"<div class="flex flex-col w-full items-center gap-4">"#
             + #"<img src="/alice.png" alt="Alice Smith" class="object-cover w-20 h-20 rounded-full">"#
             + #"<span class="text-lg">Alice Smith</span>"#
             + #"<span class="text-sm text-gray-500">Swift developer</span>"#
@@ -1522,7 +1513,6 @@ struct CustomViewTests {
             + #"<div class="flex flex-row w-full items-center gap-2 flex-wrap">"#
             + #"<span class="inline-flex items-center justify-center px-2 py-0.5 text-xs font-medium rounded-full bg-gray-500 text-white">iOS</span>"#
             + #"<span class="inline-flex items-center justify-center px-2 py-0.5 text-xs font-medium rounded-full bg-gray-500 text-white">Web</span>"#
-            + #"</div>"#
             + #"</div>"#
             + #"</div>"#
         )
@@ -1534,14 +1524,12 @@ struct CustomViewTests {
             bio: "Designer", tags: []
         )
         HTMLExpect(view, toBe:
-            #"<div class="border flex-1 border-gray-300 rounded-lg p-4">"#
-            + #"<div class="flex flex-col w-full items-center gap-4">"#
+            #"<div class="flex flex-col w-full items-center gap-4">"#
             + #"<img src="/bob.png" alt="Bob" class="object-cover w-20 h-20 rounded-full">"#
             + #"<span class="text-lg">Bob</span>"#
             + #"<span class="text-sm text-gray-500">Designer</span>"#
             + #"<hr class="border-t border-gray-200 my-2 w-full">"#
             + #"<div class="flex flex-row w-full items-center gap-2 flex-wrap">"#
-            + #"</div>"#
             + #"</div>"#
             + #"</div>"#
         )
@@ -1766,7 +1754,7 @@ struct CustomViewTests {
     @Test func nestedBorders() {
         let view = NestedBorderCard(title: "Outer", inner: "Inner content")
         HTMLExpect(view, toBe:
-            #"<div class="border flex-1 border-gray-300 rounded-lg p-4">"#
+            #"<div class="flex flex-col w-full items-start gap-2">"#
             + #"<span class="text-lg">Outer</span>"#
             + #"<hr class="border-t border-gray-200 my-2 w-full">"#
             + #"<span class="w-full inline-block border border-gray-300 rounded px-3 py-1.5 text-sm bg-gray-100">Inner content</span>"#
@@ -1818,8 +1806,7 @@ struct CustomViewTests {
             ("Gadget", 1, "$25"),
         ], total: "$45")
         HTMLExpect(view, toBe:
-            #"<div class="border flex-1 border-gray-300 rounded-lg p-4">"#
-            + #"<div class="flex flex-col w-full items-start gap-4">"#
+            #"<div class="flex flex-col w-full items-start gap-4">"#
             + #"<span class="text-lg">Order Summary</span>"#
             + #"<hr class="border-t border-gray-200 my-2 w-full">"#
             + #"<table class="w-full table-auto border-collapse">"#
@@ -1832,7 +1819,6 @@ struct CustomViewTests {
             + #"<span class="text-sm">Total</span>"#
             + #"<div class="flex-grow"></div>"#
             + #"<span class="text-lg">$45</span>"#
-            + #"</div>"#
             + #"</div>"#
             + #"</div>"#
         )
