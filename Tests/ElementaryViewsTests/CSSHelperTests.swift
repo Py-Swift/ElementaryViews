@@ -159,4 +159,111 @@ struct CSSHelperTests {
         #expect(CSSFontWeight.extrabold.rawValue == "font-extrabold")
         #expect(CSSFontWeight.black.rawValue == "font-black")
     }
+
+    // MARK: - CSSColorKey ShapeStyle conformance
+
+    @Test func colorKeyShapeStyleText() {
+        #expect(CSSColorKey.blue_500.cssClass(for: .text) == "text-blue-500")
+    }
+
+    @Test func colorKeyShapeStyleBackground() {
+        #expect(CSSColorKey.red_300.cssClass(for: .background) == "bg-red-300")
+    }
+
+    @Test func colorKeyShapeStyleBorder() {
+        #expect(CSSColorKey.gray_200.cssClass(for: .border) == "border-gray-200")
+    }
+
+    // MARK: - Shape types
+
+    @Test func rectangleShapeCSS() {
+        let shape = Rectangle()
+        #expect(shape.css == "")
+    }
+
+    @Test func roundedRectangleShapeCSS() {
+        let shape = RoundedRectangle(cornerRadius: .lg)
+        #expect(shape.css == "rounded-lg")
+    }
+
+    @Test func circleShapeCSS() {
+        let shape = Circle()
+        #expect(shape.css == "rounded-full aspect-square")
+    }
+
+    @Test func capsuleShapeCSS() {
+        let shape = Capsule()
+        #expect(shape.css == "rounded-full")
+    }
+
+    // MARK: - Color struct
+
+    @Test func colorRGBHex() {
+        let c = Color(red: 1.0, green: 0.0, blue: 0.0)
+        #expect(c.hexString == "#ff0000")
+    }
+
+    @Test func colorRGBAHex() {
+        let c = Color(red: 0.0, green: 0.0, blue: 1.0, opacity: 0.5)
+        #expect(c.hexString == "#0000ff7f")
+    }
+
+    @Test func colorWhite() {
+        #expect(Color.white.hexString == "#ffffff")
+        #expect(Color.black.hexString == "#000000")
+    }
+
+    @Test func colorClear() {
+        let c = Color.clear
+        #expect(c.hexString == "#00000000")
+    }
+
+    @Test func colorFromHex6() {
+        let c = Color(hex: "#FF8800")
+        #expect(c != nil)
+        #expect(c!.hexString == "#ff8800")
+    }
+
+    @Test func colorFromHex8() {
+        let c = Color(hex: "00FF0080")
+        #expect(c != nil)
+        #expect(c!.hexString == "#00ff0080")
+    }
+
+    @Test func colorFromHexInvalid() {
+        #expect(Color(hex: "XYZ") == nil)
+        #expect(Color(hex: "12345") == nil)
+    }
+
+    @Test func colorShapeStyleText() {
+        let c = Color(red: 1.0, green: 0.0, blue: 0.0)
+        #expect(c.cssClass(for: .text) == "text-[#ff0000]")
+    }
+
+    @Test func colorShapeStyleBackground() {
+        let c = Color(red: 0.0, green: 0.0, blue: 1.0, opacity: 0.5)
+        #expect(c.cssClass(for: .background) == "bg-[#0000ff7f]")
+    }
+
+    @Test func colorOpacityModifier() {
+        let c = Color.red.opacity(0.5)
+        #expect(c.opacity == 0.5)
+        #expect(c.red == Color.red.red)
+    }
+
+    @Test func colorStaticConstants() {
+        // Just verify they exist and produce valid hex
+        #expect(Color.red.hexString.hasPrefix("#"))
+        #expect(Color.blue.hexString.hasPrefix("#"))
+        #expect(Color.green.hexString.hasPrefix("#"))
+        #expect(Color.white.hexString == "#ffffff")
+        #expect(Color.black.hexString == "#000000")
+    }
+
+    @Test func colorHashable() {
+        let a = Color(red: 0.5, green: 0.5, blue: 0.5)
+        let b = Color(red: 0.5, green: 0.5, blue: 0.5)
+        #expect(a == b)
+        #expect(a.hashValue == b.hashValue)
+    }
 }

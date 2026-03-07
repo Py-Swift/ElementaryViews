@@ -143,4 +143,46 @@ struct ViewModifierTests {
             .background(.gray_100)
         HTMLExpect(html, toBe: #"<div class="px-2 py-1.0 rounded-md shadow-sm bg-gray-100">box</div>"#)
     }
+
+    // MARK: - ShapeStyle Modifiers
+
+    @Test func foregroundStyleWithCSSColorKey() {
+        let html = span { "text" }.foregroundStyle(CSSColorKey.blue_500)
+        HTMLExpect(html, toBe: #"<span class="text-blue-500">text</span>"#)
+    }
+
+    @Test func foregroundStyleWithColor() {
+        let html = span { "text" }.foregroundStyle(Color(red: 1.0, green: 0.0, blue: 0.0))
+        HTMLExpect(html, toBe: #"<span class="text-[#ff0000]">text</span>"#)
+    }
+
+    @Test func backgroundStyleWithCSSColorKey() {
+        let html = div { "content" }.backgroundStyle(CSSColorKey.green_300)
+        HTMLExpect(html, toBe: #"<div class="bg-green-300">content</div>"#)
+    }
+
+    @Test func backgroundStyleWithColor() {
+        let html = div { "content" }.backgroundStyle(Color.blue)
+        HTMLExpect(html, toBe: #"<div class="bg-[#007aff]">content</div>"#)
+    }
+
+    @Test func clipShapeCircle() {
+        let html = div { "avatar" }.clipShape(Circle())
+        HTMLExpect(html, toBe: #"<div class="rounded-full aspect-square">avatar</div>"#)
+    }
+
+    @Test func clipShapeCapsule() {
+        let html = div { "pill" }.clipShape(Capsule())
+        HTMLExpect(html, toBe: #"<div class="rounded-full">pill</div>"#)
+    }
+
+    @Test func clipShapeRoundedRectangle() {
+        let html = div { "card" }.clipShape(RoundedRectangle(cornerRadius: .xl))
+        HTMLExpect(html, toBe: #"<div class="rounded-xl">card</div>"#)
+    }
+
+    @Test func clipShapeRectangle() {
+        let html = div { "block" }.clipShape(Rectangle())
+        HTMLExpect(html, toBe: #"<div>block</div>"#)
+    }
 }

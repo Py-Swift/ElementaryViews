@@ -68,6 +68,35 @@ extension HTML where Tag: HTMLTrait.Attributes.Global {
         attributes(.class("bg-\(color.rawValue)"))
     }
 
+    /// Sets the foreground style via any `ShapeStyle` conforming type.
+    ///
+    /// Accepts `CSSColorKey`, `Color`, or any custom `ShapeStyle`.
+    /// ```swift
+    /// Text("Hello").foregroundStyle(Color.red)
+    /// Text("World").foregroundStyle(CSSColorKey.blue_500)
+    /// ```
+    public func foregroundStyle(_ style: some ShapeStyle) -> _AttributedElement<Self> {
+        attributes(.class(style.cssClass(for: .text)))
+    }
+
+    /// Sets the background style via any `ShapeStyle` conforming type.
+    ///
+    /// Accepts `CSSColorKey`, `Color`, or any custom `ShapeStyle`.
+    public func backgroundStyle(_ style: some ShapeStyle) -> _AttributedElement<Self> {
+        attributes(.class(style.cssClass(for: .background)))
+    }
+
+    /// Clips the element to a `Shape` by applying the shape's CSS classes.
+    ///
+    /// ```swift
+    /// div { "content" }.clipShape(Circle())   // adds "rounded-full aspect-square"
+    /// div { "content" }.clipShape(Capsule())  // adds "rounded-full"
+    /// ```
+    public func clipShape(_ shape: some Shape) -> _AttributedElement<Self> {
+        if shape.css.isEmpty { return attributes() }
+        return attributes(.class(shape.css))
+    }
+
     // MARK: Layout & Spacing
 
     /// Applies padding via Tailwind padding classes.

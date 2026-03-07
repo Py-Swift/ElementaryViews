@@ -3,7 +3,7 @@
 //  ElementaryViews
 //
 
-public enum CSSColorKey: String, Sendable {
+public enum CSSColorKey: String, Sendable, ShapeStyle {
     // Slate
     case slate_50 = "slate-50"
     case slate_100 = "slate-100"
@@ -268,4 +268,15 @@ public enum CSSColorKey: String, Sendable {
     case rose_800 = "rose-800"
     case rose_900 = "rose-900"
     case rose_950 = "rose-950"
+}
+
+// MARK: - ShapeStyle Conformance
+
+extension CSSColorKey {
+    /// Returns the Tailwind CSS class for this named color in the given role.
+    ///
+    /// For example, `CSSColorKey.blue_500.cssClass(for: .text)` returns `"text-blue-500"`.
+    public func cssClass(for role: CSSStyleRole) -> String {
+        "\(role.rawValue)-\(self.rawValue)"
+    }
 }
