@@ -2,7 +2,7 @@
 //  Canvas.swift
 //  ElementaryViews
 //
-//  A SwiftUI-compatible Canvas view that renders an HTML <canvas> element
+//  A SwiftUI-matching Canvas that renders an HTML <canvas> element
 //  and executes drawing commands via GraphicsContext at mount time.
 //
 
