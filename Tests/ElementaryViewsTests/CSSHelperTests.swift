@@ -132,4 +132,31 @@ struct CSSHelperTests {
         #expect(CSSObjectFit.none.rawValue == "object-none")
         #expect(CSSObjectFit.scaleDown.rawValue == "object-scale-down")
     }
+
+    // MARK: - CSSShadow
+
+    @Test func shadowRawValues() {
+        #expect(CSSShadow.none.rawValue == "shadow-none")
+        #expect(CSSShadow.sm.rawValue == "shadow-sm")
+        #expect(CSSShadow.regular.rawValue == "shadow")
+        #expect(CSSShadow.md.rawValue == "shadow-md")
+        #expect(CSSShadow.lg.rawValue == "shadow-lg")
+        #expect(CSSShadow.xl.rawValue == "shadow-xl")
+        #expect(CSSShadow.xl2.rawValue == "shadow-2xl")
+        #expect(CSSShadow.inner.rawValue == "shadow-inner")
+    }
+
+    // MARK: - CSSFontWeight
+
+    @Test func fontWeightRawValues() {
+        #expect(CSSFontWeight.thin.rawValue == "font-thin")
+        #expect(CSSFontWeight.extralight.rawValue == "font-extralight")
+        #expect(CSSFontWeight.light.rawValue == "font-light")
+        #expect(CSSFontWeight.normal.rawValue == "font-normal")
+        #expect(CSSFontWeight.medium.rawValue == "font-medium")
+        #expect(CSSFontWeight.semibold.rawValue == "font-semibold")
+        #expect(CSSFontWeight.bold.rawValue == "font-bold")
+        #expect(CSSFontWeight.extrabold.rawValue == "font-extrabold")
+        #expect(CSSFontWeight.black.rawValue == "font-black")
+    }
 }
