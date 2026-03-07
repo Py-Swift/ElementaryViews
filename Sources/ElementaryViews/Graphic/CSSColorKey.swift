@@ -268,15 +268,23 @@ public enum CSSColorKey: String, Sendable, ShapeStyle {
     case rose_800 = "rose-800"
     case rose_900 = "rose-900"
     case rose_950 = "rose-950"
+    
+    public var description: String { rawValue }
 }
 
-// MARK: - ShapeStyle Conformance
 
+
+// MARK: - ShapeStyle Conformance
+import ElementaryUI
 extension CSSColorKey {
     /// Returns the Tailwind CSS class for this named color in the given role.
     ///
     /// For example, `CSSColorKey.blue_500.cssClass(for: .text)` returns `"text-blue-500"`.
     public func cssClass(for role: CSSStyleRole) -> String {
         "\(role.rawValue)-\(self.rawValue)"
+    }
+    
+    public func resolve(in environment: EnvironmentValues?, for role: CSSStyleRole) -> some ShapeStyle {
+        rawValue.resolve(in: environment, for: role)
     }
 }

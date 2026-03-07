@@ -76,14 +76,16 @@ extension HTML where Tag: HTMLTrait.Attributes.Global {
     /// Text("World").foregroundStyle(CSSColorKey.blue_500)
     /// ```
     public func foregroundStyle(_ style: some ShapeStyle) -> _AttributedElement<Self> {
-        attributes(.class(style.cssClass(for: .text)))
+        //attributes(.class(style.cssClass(for: .text)))
+        attributes(.class(style.resolve(in: nil, for: .text).description))
     }
 
     /// Sets the background style via any `ShapeStyle` conforming type.
     ///
     /// Accepts `CSSColorKey`, `Color`, or any custom `ShapeStyle`.
     public func backgroundStyle(_ style: some ShapeStyle) -> _AttributedElement<Self> {
-        attributes(.class(style.cssClass(for: .background)))
+        //attributes(.class(style.cssClass(for: .background)))
+        attributes(.class(style.resolve(in: nil, for: .background).description))
     }
 
     /// Clips the element to a `Shape` by applying the shape's CSS classes.

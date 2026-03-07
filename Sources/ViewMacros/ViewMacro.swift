@@ -29,12 +29,17 @@ extension ViewMacro: ExtensionMacro {
         conformingTo protocols: [TypeSyntax],
         in context: some MacroExpansionContext
     ) throws -> [ExtensionDeclSyntax] {
-        guard !protocols.isEmpty else { return [] }
+        // NOTE: protocols may be empty when the struct already inherits View
+        // through a protocol (e.g. Shape: View). We still need to generate
+        // __FunctionView and __ViewEquatable conformances, so always proceed.
+        // guard !protocols.isEmpty else { return [] }
 
         var result: [ExtensionDeclSyntax] = []
 
-        let needsFunctionView = protocols.contains { $0.trimmed.description == "__FunctionView" }
-        let needsViewEquatable = protocols.contains { $0.trimmed.description == "__ViewEquatable" }
+        //let needsFunctionView = protocols.isEmpty || protocols.contains { $0.trimmed.description == "__FunctionView" }
+        let needsFunctionView = protocols.isEmpty || protocols.contains { $0.trimmed.description == "__FunctionView" }
+        //let needsViewEquatable = protocols.isEmpty || protocols.contains { $0.trimmed.description == "__ViewEquatable" }
+        let needsViewEquatable = protocols.isEmpty || protocols.contains { $0.trimmed.description == "__ViewEquatable" }
         let members = declaration.memberBlock.members.compactMap { $0.decl.as(VariableDeclSyntax.self) }
         
         let isPublic = declaration.modifiers.contains { modifier in

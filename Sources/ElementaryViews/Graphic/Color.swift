@@ -3,6 +3,8 @@
 //  ElementaryViews
 //
 
+import ElementaryUI
+
 /// A custom color defined by raw RGBA values, conforming to `ShapeStyle`.
 ///
 /// Analogous to SwiftUI's `Color` struct. Stores red, green, blue, and opacity
@@ -128,8 +130,37 @@ public struct Color: ShapeStyle, Hashable, Sendable {
     private func clamped(_ value: Double) -> Double {
         min(max(value, 0), 1)
     }
+    
+    public func resolve(in environment: EnvironmentValues?, for role: CSSStyleRole) -> some ShapeStyle {
+        "\(role.rawValue)-[\(self)]"
+    }
 }
 
+extension Color: CustomStringConvertible {
+    public var description: String {
+        let r = Int(clamped(red) * 255)
+        let g = Int(clamped(green) * 255)
+        let b = Int(clamped(blue) * 255)
+        
+        if opacity >= 1.0 {
+            return String([
+                "#",
+                Self.hexTable[(r >> 4) & 0xF], Self.hexTable[r & 0xF],
+                Self.hexTable[(g >> 4) & 0xF], Self.hexTable[g & 0xF],
+                Self.hexTable[(b >> 4) & 0xF], Self.hexTable[b & 0xF]
+            ])
+        } else {
+            let a = Int(clamped(opacity) * 255)
+            return String([
+                "#",
+                Self.hexTable[(r >> 4) & 0xF], Self.hexTable[r & 0xF],
+                Self.hexTable[(g >> 4) & 0xF], Self.hexTable[g & 0xF],
+                Self.hexTable[(b >> 4) & 0xF], Self.hexTable[b & 0xF],
+                Self.hexTable[(a >> 4) & 0xF], Self.hexTable[a & 0xF]
+            ])
+        }
+    }
+}
 // MARK: - Standard Color Constants
 
 extension Color {
