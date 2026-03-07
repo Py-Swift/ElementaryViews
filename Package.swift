@@ -11,12 +11,14 @@ let package = Package(
     dependencies: [
         .package(url: "https://github.com/elementary-swift/elementary-ui.git", from: "0.1.3"),
         .package(url: "https://github.com/swiftlang/swift-syntax", from: "602.0.0"),
+        .package(url: "https://github.com/Py-Swift/JavaScriptKitExtensions.git", branch: "master"),
     ],
     targets: [
         .target(
             name: "ElementaryViews",
             dependencies: [
                 .product(name: "ElementaryUI", package: "elementary-ui"),
+                .product(name: "JavaScriptKitExtensions", package: "JavaScriptKitExtensions"),
                 "ViewMacros",
             ],
             swiftSettings: [

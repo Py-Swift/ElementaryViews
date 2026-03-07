@@ -1,5 +1,5 @@
 {
-  "originHash" : "182993c79906c9224ac1b0541cf78f6b97c953b3b38147ecfe9d456e004bdd4b",
+  "originHash" : "8b63d639b86a58be43a9d82f7190c42f71529916d3329e2116655fd08f118f6e",
   "pins" : [
     {
       "identity" : "elementary",
@@ -26,6 +26,15 @@
       "state" : {
         "revision" : "5529520b25638aa86765ab33b175289f1ab263a3",
         "version" : "0.46.5"
+      }
+    },
+    {
+      "identity" : "javascriptkitextensions",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/Py-Swift/JavaScriptKitExtensions.git",
+      "state" : {
+        "branch" : "master",
+        "revision" : "81cf0a32977f5ee509e64faa26c3605f8da7efc4"
       }
     },
     {
