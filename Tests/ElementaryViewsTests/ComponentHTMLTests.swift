@@ -233,4 +233,141 @@ struct ComponentHTMLTests {
         let html = form(.class("flex flex-col gap-4")) { p { "field" } }
         HTMLExpect(html, toBe: #"<form class="flex flex-col gap-4"><p>field</p></form>"#)
     }
+
+    // MARK: - ListView
+
+    @Test func listViewDefault() {
+        let html = ul(.class("flex flex-col")) { li { "item" } }
+        HTMLExpect(html, toBe: #"<ul class="flex flex-col"><li>item</li></ul>"#)
+    }
+
+    @Test func listViewDivided() {
+        let html = ul(.class("flex flex-col divide-y divide-gray-200")) { li { "item" } }
+        HTMLExpect(html, toBe: #"<ul class="flex flex-col divide-y divide-gray-200"><li>item</li></ul>"#)
+    }
+
+    // MARK: - NavigationLink
+
+    @Test func navigationLinkDefault() {
+        let html = a(.href("/about"), .class("flex items-center gap-2 text-blue-600 hover:text-blue-800 hover:underline cursor-pointer")) {
+            span(.class("text-sm")) { "About" }
+            span(.class("text-gray-400 text-xs")) { "›" }
+        }
+        HTMLExpect(html, toBe: #"<a href="/about" class="flex items-center gap-2 text-blue-600 hover:text-blue-800 hover:underline cursor-pointer"><span class="text-sm">About</span><span class="text-gray-400 text-xs">›</span></a>"#)
+    }
+
+    @Test func navigationLinkNewTab() {
+        let html = a(.href("https://example.com"), .target(.blank), .class("flex items-center gap-2 text-blue-600 hover:text-blue-800 hover:underline cursor-pointer")) {
+            span(.class("text-sm")) { "External" }
+            span(.class("text-gray-400 text-xs")) { "↗" }
+        }
+        HTMLExpect(html, toBe: #"<a href="https://example.com" target="_blank" class="flex items-center gap-2 text-blue-600 hover:text-blue-800 hover:underline cursor-pointer"><span class="text-sm">External</span><span class="text-gray-400 text-xs">↗</span></a>"#)
+    }
+
+    // MARK: - Badge
+
+    @Test func badgeStandard() {
+        let html = span(.class("inline-flex items-center justify-center px-2 py-0.5 text-xs font-medium rounded-full bg-gray-500 text-white")) { "5" }
+        HTMLExpect(html, toBe: #"<span class="inline-flex items-center justify-center px-2 py-0.5 text-xs font-medium rounded-full bg-gray-500 text-white">5</span>"#)
+    }
+
+    @Test func badgeIncreased() {
+        let html = span(.class("inline-flex items-center justify-center px-2 py-0.5 text-xs font-medium rounded-full bg-red-500 text-white")) { "New" }
+        HTMLExpect(html, toBe: #"<span class="inline-flex items-center justify-center px-2 py-0.5 text-xs font-medium rounded-full bg-red-500 text-white">New</span>"#)
+    }
+
+    @Test func badgeDecreased() {
+        let html = span(.class("inline-flex items-center justify-center px-2 py-0.5 text-xs font-medium rounded-full bg-gray-200 text-gray-600")) { "3" }
+        HTMLExpect(html, toBe: #"<span class="inline-flex items-center justify-center px-2 py-0.5 text-xs font-medium rounded-full bg-gray-200 text-gray-600">3</span>"#)
+    }
+
+    // MARK: - Stepper
+
+    @Test func stepperStructure() {
+        // Stepper's outer structure: label + button group
+        let html = div(.class("inline-flex items-center gap-2")) {
+            div(.class("text-sm")) {
+                span(.class("text-sm")) { "Quantity" }
+            }
+            div(.class("inline-flex items-center border border-gray-300 rounded-lg overflow-hidden")) {
+                button(.class("px-3 py-1 text-gray-600 hover:bg-gray-100 active:bg-gray-200 border-r border-gray-300 font-medium")) { "−" }
+                button(.class("px-3 py-1 text-gray-600 hover:bg-gray-100 active:bg-gray-200 font-medium")) { "+" }
+            }
+        }
+        HTMLExpect(html, toBe: #"<div class="inline-flex items-center gap-2"><div class="text-sm"><span class="text-sm">Quantity</span></div><div class="inline-flex items-center border border-gray-300 rounded-lg overflow-hidden"><button class="px-3 py-1 text-gray-600 hover:bg-gray-100 active:bg-gray-200 border-r border-gray-300 font-medium">−</button><button class="px-3 py-1 text-gray-600 hover:bg-gray-100 active:bg-gray-200 font-medium">+</button></div></div>"#)
+    }
+
+    // MARK: - SegmentedPicker
+
+    @Test func segmentButtonSelected() {
+        let html = button(.class("px-4 py-2 text-sm font-medium bg-blue-500 text-white focus:outline-none")) { "Tab A" }
+        HTMLExpect(html, toBe: #"<button class="px-4 py-2 text-sm font-medium bg-blue-500 text-white focus:outline-none">Tab A</button>"#)
+    }
+
+    @Test func segmentButtonUnselected() {
+        let html = button(.class("px-4 py-2 text-sm font-medium bg-white text-gray-700 hover:bg-gray-50 focus:outline-none")) { "Tab B" }
+        HTMLExpect(html, toBe: #"<button class="px-4 py-2 text-sm font-medium bg-white text-gray-700 hover:bg-gray-50 focus:outline-none">Tab B</button>"#)
+    }
+
+    // MARK: - TabView
+
+    @Test func tabButtonSelected() {
+        let html = button(.class("px-4 py-2 text-sm font-medium border-b-2 border-blue-500 text-blue-600 focus:outline-none")) { "Home" }
+        HTMLExpect(html, toBe: #"<button class="px-4 py-2 text-sm font-medium border-b-2 border-blue-500 text-blue-600 focus:outline-none">Home</button>"#)
+    }
+
+    @Test func tabButtonUnselected() {
+        let html = button(.class("px-4 py-2 text-sm font-medium border-b-2 border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 focus:outline-none")) { "Settings" }
+        HTMLExpect(html, toBe: #"<button class="px-4 py-2 text-sm font-medium border-b-2 border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 focus:outline-none">Settings</button>"#)
+    }
+
+    @Test func tabViewContentArea() {
+        let html = div(.class("p-4")) { p { "Tab content" } }
+        HTMLExpect(html, toBe: #"<div class="p-4"><p>Tab content</p></div>"#)
+    }
+
+    // MARK: - DropdownMenu
+
+    @Test func dropdownMenuClosed() {
+        let html = div(.class("relative inline-block text-left")) {
+            div(.class("cursor-pointer")) {
+                span(.class("text-sm")) { "Menu" }
+            }
+        }
+        HTMLExpect(html, toBe: #"<div class="relative inline-block text-left"><div class="cursor-pointer"><span class="text-sm">Menu</span></div></div>"#)
+    }
+
+    @Test func dropdownMenuOpen() {
+        let html = div(.class("relative inline-block text-left")) {
+            div(.class("cursor-pointer")) {
+                span(.class("text-sm")) { "Menu" }
+            }
+            div(.class("absolute z-10 mt-2 w-48 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5")) {
+                div(.class("py-1"), .custom(name: "role", value: "menu")) {
+                    button(.class("block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"), .custom(name: "role", value: "menuitem")) { "Edit" }
+                }
+            }
+        }
+        HTMLExpect(html, toBe: #"<div class="relative inline-block text-left"><div class="cursor-pointer"><span class="text-sm">Menu</span></div><div class="absolute z-10 mt-2 w-48 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5"><div class="py-1" role="menu"><button class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">Edit</button></div></div></div>"#)
+    }
+
+    @Test func menuItemStructure() {
+        let html = button(.class("block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"), .custom(name: "role", value: "menuitem")) { "Delete" }
+        HTMLExpect(html, toBe: #"<button class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">Delete</button>"#)
+    }
+
+    // MARK: - AlertDialog
+
+    @Test func alertDialogStructure() {
+        let html = div(.class("fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50")) {
+            div(.class("bg-white rounded-lg shadow-xl max-w-sm w-full mx-4 p-6")) {
+                div(.class("text-lg font-semibold text-gray-900 mb-2")) { "Confirm" }
+                div(.class("text-sm text-gray-600 mb-4")) { "Are you sure?" }
+                div(.class("flex justify-end gap-2")) {
+                    button { "OK" }
+                }
+            }
+        }
+        HTMLExpect(html, toBe: #"<div class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50"><div class="bg-white rounded-lg shadow-xl max-w-sm w-full mx-4 p-6"><div class="text-lg font-semibold text-gray-900 mb-2">Confirm</div><div class="text-sm text-gray-600 mb-4">Are you sure?</div><div class="flex justify-end gap-2"><button>OK</button></div></div></div>"#)
+    }
 }
