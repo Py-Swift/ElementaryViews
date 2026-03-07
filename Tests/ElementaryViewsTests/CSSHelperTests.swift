@@ -400,4 +400,271 @@ struct CSSHelperTests {
         #expect(CSSStyleRole.fill.rawValue == "fill")
         #expect(CSSStyleRole.stroke.rawValue == "stroke")
     }
+
+    // MARK: - Gradient.Stop
+
+    @Test func gradientStopFromColor() {
+        let stop = Gradient.Stop(color: Color.red)
+        #expect(stop.colorToken == "[#ff3b30]")
+        #expect(stop.location == nil)
+    }
+
+    @Test func gradientStopFromColorWithLocation() {
+        let stop = Gradient.Stop(color: Color.blue, location: 0.5)
+        #expect(stop.colorToken == "[#007aff]")
+        #expect(stop.location == 0.5)
+    }
+
+    @Test func gradientStopFromCSSColorKey() {
+        let stop = Gradient.Stop(color: CSSColorKey.blue_500)
+        #expect(stop.colorToken == "blue-500")
+        #expect(stop.location == nil)
+    }
+
+    @Test func gradientStopFromToken() {
+        let stop = Gradient.Stop(token: "white", location: 0.0)
+        #expect(stop.colorToken == "white")
+        #expect(stop.location == 0.0)
+    }
+
+    // MARK: - Gradient
+
+    @Test func gradientFromColors() {
+        let g = Gradient(colors: [.red, .blue])
+        #expect(g.stops.count == 2)
+        #expect(g.stops[0].colorToken == "[#ff3b30]")
+        #expect(g.stops[1].colorToken == "[#007aff]")
+    }
+
+    @Test func gradientFromCSSColors() {
+        let g = Gradient(cssColors: [.blue_500, .pink_500])
+        #expect(g.stops.count == 2)
+        #expect(g.stops[0].colorToken == "blue-500")
+        #expect(g.stops[1].colorToken == "pink-500")
+    }
+
+    @Test func gradientCSSStopClassesTwoStops() {
+        let g = Gradient(cssColors: [.cyan_500, .blue_500])
+        #expect(g.cssStopClasses == "from-cyan-500 to-blue-500")
+    }
+
+    @Test func gradientCSSStopClassesThreeStops() {
+        let g = Gradient(cssColors: [.indigo_500, .purple_500, .pink_500])
+        #expect(g.cssStopClasses == "from-indigo-500 via-purple-500 to-pink-500")
+    }
+
+    @Test func gradientCSSStopClassesWithLocations() {
+        let g = Gradient(stops: [
+            .init(color: .blue_500, location: 0.1),
+            .init(color: .purple_500, location: 0.3),
+            .init(color: .pink_500, location: 0.9)
+        ])
+        #expect(g.cssStopClasses == "from-blue-500 from-10% via-purple-500 via-30% to-pink-500 to-90%")
+    }
+
+    @Test func gradientCSSStopClassesSingleStop() {
+        let g = Gradient(cssColors: [.red_500])
+        #expect(g.cssStopClasses == "from-red-500")
+    }
+
+    @Test func gradientCSSStopClassesEmpty() {
+        let g = Gradient(stops: [])
+        #expect(g.cssStopClasses == "")
+    }
+
+    @Test func gradientCSSStopClassesWithColorHex() {
+        let g = Gradient(colors: [.red, .blue])
+        #expect(g.cssStopClasses == "from-[#ff3b30] to-[#007aff]")
+    }
+
+    // MARK: - LinearGradient
+
+    @Test func linearGradientToRight() {
+        let lg = LinearGradient(
+            cssColors: [.cyan_500, .blue_500],
+            startPoint: .leading,
+            endPoint: .trailing
+        )
+        let css = lg.resolve(in: nil, for: .background).description
+        #expect(css == "bg-linear-to-r from-cyan-500 to-blue-500")
+    }
+
+    @Test func linearGradientToBottom() {
+        let lg = LinearGradient(
+            cssColors: [.red_500, .yellow_500],
+            startPoint: .top,
+            endPoint: .bottom
+        )
+        let css = lg.resolve(in: nil, for: .background).description
+        #expect(css == "bg-linear-to-b from-red-500 to-yellow-500")
+    }
+
+    @Test func linearGradientToTopLeft() {
+        let lg = LinearGradient(
+            cssColors: [.green_400, .blue_600],
+            startPoint: .bottomTrailing,
+            endPoint: .topLeading
+        )
+        let css = lg.resolve(in: nil, for: .background).description
+        #expect(css == "bg-linear-to-tl from-green-400 to-blue-600")
+    }
+
+    @Test func linearGradientAllDirections() {
+        func dir(_ end: UnitPoint) -> String {
+            LinearGradient(cssColors: [.red_500, .blue_500], startPoint: .center, endPoint: end)
+                .resolve(in: nil, for: .background).description
+        }
+        #expect(dir(UnitPoint.trailing).hasPrefix("bg-linear-to-r"))
+        #expect(dir(UnitPoint.leading).hasPrefix("bg-linear-to-l"))
+        #expect(dir(UnitPoint.top).hasPrefix("bg-linear-to-t"))
+        #expect(dir(UnitPoint.bottom).hasPrefix("bg-linear-to-b"))
+        #expect(dir(UnitPoint.topTrailing).hasPrefix("bg-linear-to-tr"))
+        #expect(dir(UnitPoint.bottomTrailing).hasPrefix("bg-linear-to-br"))
+        #expect(dir(UnitPoint.topLeading).hasPrefix("bg-linear-to-tl"))
+        #expect(dir(UnitPoint.bottomLeading).hasPrefix("bg-linear-to-bl"))
+    }
+
+    @Test func linearGradientThreeStops() {
+        let lg = LinearGradient(
+            cssColors: [.indigo_500, .purple_500, .pink_500],
+            startPoint: .topLeading,
+            endPoint: .bottomTrailing
+        )
+        let css = lg.resolve(in: nil, for: .background).description
+        #expect(css == "bg-linear-to-br from-indigo-500 via-purple-500 to-pink-500")
+    }
+
+    @Test func linearGradientWithColors() {
+        let lg = LinearGradient(
+            colors: [.red, .blue],
+            startPoint: .leading,
+            endPoint: .trailing
+        )
+        let css = lg.resolve(in: nil, for: .background).description
+        #expect(css == "bg-linear-to-r from-[#ff3b30] to-[#007aff]")
+    }
+
+    @Test func linearGradientTextRole() {
+        let lg = LinearGradient(
+            cssColors: [.pink_500, .violet_500],
+            startPoint: .leading,
+            endPoint: .trailing
+        )
+        let css = lg.resolve(in: nil, for: .text).description
+        #expect(css == "bg-linear-to-r from-pink-500 to-violet-500 bg-clip-text text-transparent")
+    }
+
+    @Test func linearGradientDescription() {
+        let lg = LinearGradient(
+            cssColors: [.red_500, .blue_500],
+            startPoint: .leading,
+            endPoint: .trailing
+        )
+        #expect(lg.description == "linearGradient(r)")
+    }
+
+    @Test func linearGradientStaticAccessor() {
+        let lg: LinearGradient = .linearGradient(
+            colors: [.red, .blue],
+            startPoint: .leading,
+            endPoint: .trailing
+        )
+        #expect(lg.gradient.stops.count == 2)
+    }
+
+    // MARK: - RadialGradient
+
+    @Test func radialGradientDefaultCenter() {
+        let rg = RadialGradient(
+            cssColors: [.yellow_400, .red_500],
+            center: .center
+        )
+        let css = rg.resolve(in: nil, for: .background).description
+        #expect(css == "bg-radial from-yellow-400 to-red-500")
+    }
+
+    @Test func radialGradientCustomCenter() {
+        let rg = RadialGradient(
+            cssColors: [.blue_400, .blue_900],
+            center: .topLeading
+        )
+        let css = rg.resolve(in: nil, for: .background).description
+        #expect(css == "bg-radial-[at_0%_0%] from-blue-400 to-blue-900")
+    }
+
+    @Test func radialGradientTextRole() {
+        let rg = RadialGradient(
+            cssColors: [.green_400, .blue_600],
+            center: .center
+        )
+        let css = rg.resolve(in: nil, for: .text).description
+        #expect(css == "bg-radial from-green-400 to-blue-600 bg-clip-text text-transparent")
+    }
+
+    @Test func radialGradientStaticAccessor() {
+        let rg: RadialGradient = .radialGradient(
+            colors: [.red, .blue],
+            center: .center
+        )
+        #expect(rg.gradient.stops.count == 2)
+    }
+
+    // MARK: - AngularGradient
+
+    @Test func angularGradientDefaultAngle() {
+        let ag = AngularGradient(
+            cssColors: [.red_500, .yellow_500, .green_500],
+            center: .center
+        )
+        let css = ag.resolve(in: nil, for: .background).description
+        #expect(css == "bg-conic from-red-500 via-yellow-500 to-green-500")
+    }
+
+    @Test func angularGradientWithAngle() {
+        let ag = AngularGradient(
+            cssColors: [.blue_500, .purple_500],
+            center: .center,
+            angleDegrees: 90
+        )
+        let css = ag.resolve(in: nil, for: .background).description
+        #expect(css == "bg-conic-[from_90deg] from-blue-500 to-purple-500")
+    }
+
+    @Test func angularGradientCustomCenterAndAngle() {
+        let ag = AngularGradient(
+            cssColors: [.red_500, .blue_500],
+            center: .topTrailing,
+            angleDegrees: 45
+        )
+        let css = ag.resolve(in: nil, for: .background).description
+        #expect(css == "bg-conic-[from_45deg_at_100%_0%] from-red-500 to-blue-500")
+    }
+
+    @Test func angularGradientCustomCenterNoAngle() {
+        let ag = AngularGradient(
+            cssColors: [.red_500, .blue_500],
+            center: .bottomLeading
+        )
+        let css = ag.resolve(in: nil, for: .background).description
+        #expect(css == "bg-conic-[at_0%_100%] from-red-500 to-blue-500")
+    }
+
+    @Test func angularGradientTextRole() {
+        let ag = AngularGradient(
+            cssColors: [.red_500, .blue_500],
+            center: .center
+        )
+        let css = ag.resolve(in: nil, for: .text).description
+        #expect(css == "bg-conic from-red-500 to-blue-500 bg-clip-text text-transparent")
+    }
+
+    @Test func angularGradientStaticAccessor() {
+        let ag: AngularGradient = .conicGradient(
+            colors: [.red, .blue],
+            center: .center,
+            angleDegrees: 45
+        )
+        #expect(ag.gradient.stops.count == 2)
+        #expect(abs(ag.angleDegrees - 45) < 0.01)
+    }
 }
