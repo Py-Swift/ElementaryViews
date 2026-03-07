@@ -30,5 +30,21 @@ let package = Package(
                 .product(name: "SwiftCompilerPlugin", package: "swift-syntax"),
             ]
         ),
+        .testTarget(
+            name: "ViewMacrosTests",
+            dependencies: [
+                "ViewMacros",
+                .product(name: "SwiftSyntaxMacrosTestSupport", package: "swift-syntax"),
+            ]
+        ),
+        .testTarget(
+            name: "ElementaryViewsTests",
+            dependencies: [
+                "ElementaryViews",
+            ],
+            swiftSettings: [
+                .swiftLanguageMode(.v5),
+            ]
+        ),
     ]
 )
