@@ -16,6 +16,7 @@ let testMacros: [String: Macro.Type] = [
     "Table": TableMacro.self,
     "TableRow": TableRowMacro.self,
     "TableCell": TableCellMacro.self,
+    "PublicView": ViewMacro.self,
 ]
 
 @Suite("Layout Macro Expansions")
@@ -223,6 +224,89 @@ struct MacroExpansionTests {
             expandedSource: """
             td(.class("px-3 py-2 text-sm align-middle w-px whitespace-nowrap")) {
                 "Compact"
+            }
+            """,
+            macros: testMacros
+        )
+    }
+
+    // MARK: - @PublicView Tag generation
+
+    @Test func publicViewWithTagGeneratesTypealias() {
+        assertMacroExpansion(
+            """
+            @PublicView(.div)
+            public struct MyView<Label: View> {
+                let label: Label
+                public var body: some View {
+                    div { label }
+                }
+            }
+            """,
+            expandedSource: """
+            public struct MyView<Label: View> {
+                let label: Label
+                @HTMLBuilder
+                public var body: some View {
+                    div { label }
+                }
+            }
+
+            extension MyView: __FunctionView {
+                //typealias _MountedNode = _FunctionNode<Self, Self.Content._MountedNode>
+                
+                public typealias Tag = HTMLTag.div
+                public static func __applyContext(_ context: borrowing _ViewContext, to view: inout Self) {
+                    
+                }
+                public typealias __ViewState = Void
+            }
+
+            extension MyView: __ViewEquatable {
+                public static func __arePropertiesEqual(a: Self, b: Self) -> Bool {
+                    return true 
+                    && __ViewProperty.areKnownEqual(a.label, b.label)
+                }
+            }
+            """,
+            macros: testMacros
+        )
+    }
+
+    @Test func publicViewWithoutTagOmitsTypealias() {
+        assertMacroExpansion(
+            """
+            @PublicView
+            public struct SimpleView {
+                let text: String
+                public var body: some View {
+                    span { text }
+                }
+            }
+            """,
+            expandedSource: """
+            public struct SimpleView {
+                let text: String
+                @HTMLBuilder
+                public var body: some View {
+                    span { text }
+                }
+            }
+
+            extension SimpleView: __FunctionView {
+                //typealias _MountedNode = _FunctionNode<Self, Self.Content._MountedNode>
+                
+                public static func __applyContext(_ context: borrowing _ViewContext, to view: inout Self) {
+                    
+                }
+                public typealias __ViewState = Void
+            }
+
+            extension SimpleView: __ViewEquatable {
+                public static func __arePropertiesEqual(a: Self, b: Self) -> Bool {
+                    return true 
+                    && __ViewProperty.areKnownEqual(a.text, b.text)
+                }
             }
             """,
             macros: testMacros

@@ -4,14 +4,12 @@
 //
 import ElementaryUI
 
-@PublicView
+@PublicView(.div)
 public struct ScrollView<ScrollContent: View> {
 
     let axis: Axis
     let showsIndicators: Bool
     let scrollContent: ScrollContent
-
-    public typealias Tag = HTMLTag.div
 
     public init(
         _ axis: Axis = .vertical,

@@ -4,13 +4,11 @@
 //
 import ElementaryUI
 
-@PublicView
+@PublicView(.section)
 public struct Section<SectionHeader: View, SectionContent: View> {
 
     let header: SectionHeader
     let sectionContent: SectionContent
-
-    public typealias Tag = HTMLTag.section
 
     public init(
         @HTMLBuilder content: () -> SectionContent,

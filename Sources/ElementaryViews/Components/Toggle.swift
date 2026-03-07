@@ -6,13 +6,11 @@ import ElementaryUI
 
 /// A toggle switch control. Equivalent to SwiftUI's `Toggle`.
 /// Renders as a styled checkbox input with a sliding switch appearance.
-@PublicView
+@PublicView(.label)
 public struct Toggle<Label: View> {
 
     @Binding var isOn: Bool
     let label: Label
-
-    public typealias Tag = HTMLTag.label
 
     public init(isOn: Binding<Bool>, @HTMLBuilder label: () -> Label) {
         self._isOn = isOn

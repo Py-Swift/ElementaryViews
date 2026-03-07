@@ -41,9 +41,30 @@ extension ViewMacro: ExtensionMacro {
             modifier.name.trimmedDescription == "public"
         }
         let pubText = isPublic ? "public " : ""
+
+        // Extract optional Tag argument from @PublicView(.tagName)
+        let tagName: String? = {
+            guard let arguments = node.arguments?.as(LabeledExprListSyntax.self),
+                  let firstArg = arguments.first?.expression.as(MemberAccessExprSyntax.self) else {
+                return nil
+            }
+            return firstArg.declName.baseName.text
+        }()
+
         // add _StatefulView conformance if any @State member is declared
         if needsFunctionView {
             var decls: [DeclSyntax] = []
+
+            // add Tag typealias if tag argument was provided
+            if let tagName {
+                decls.append(
+                    DeclSyntax(
+                        """
+                        \(raw: pubText)typealias Tag = HTMLTag.\(raw: tagName)
+                        """
+                    )
+                )
+            }
 
             // add loading environment properties
             let environmentLoads =

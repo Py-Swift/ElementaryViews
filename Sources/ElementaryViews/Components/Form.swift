@@ -4,13 +4,11 @@
 //
 import ElementaryUI
 
-@PublicView
+@PublicView(.form)
 public struct Form<FormContent: View> {
 
     let formContent: FormContent
     let spacing: String
-
-    public typealias Tag = HTMLTag.form
 
     public init(
         spacing: String = "4",

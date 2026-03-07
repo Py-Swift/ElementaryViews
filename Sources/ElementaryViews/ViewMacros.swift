@@ -100,6 +100,20 @@ public macro TableCell<T: HTML>(
 ) -> HTMLElement<HTMLTag.td, T> = #externalMacro(module: "ViewMacros", type: "TableCellMacro")
 
 
+/// Phantom enum for specifying HTML tag types in `@PublicView`.
+/// Maps to `HTMLTag.xxx` via macro expansion.
+public enum ViewTag {
+    case a, article, aside, b, blockquote, br, button, caption
+    case code, col, colgroup, dd, details, dialog, div, dl, dt
+    case em, fieldset, figcaption, figure, footer, form, h1, h2
+    case h3, h4, h5, h6, head, header, hr, i, iframe, img, input
+    case label, legend, li, link, main, mark, meta, nav, ol, optgroup
+    case option, output, p, pre, progress, script, section, select
+    case slot, small, span, strong, style, sub, summary, sup, table
+    case tbody, td, template, textarea, tfoot, th, thead, time, title
+    case tr, u, ul
+}
+
 @attached(
     extension,
     conformances: __FunctionView,
@@ -109,7 +123,8 @@ public macro TableCell<T: HTML>(
     named(__applyContext),
     named(__ViewState),
     named(_MountedNode),
-    named(__arePropertiesEqual)
+    named(__arePropertiesEqual),
+    named(Tag)
 )
 @attached(memberAttribute)
-public macro PublicView() = #externalMacro(module: "ViewMacros", type: "ViewMacro")
+public macro PublicView(_ tag: ViewTag? = nil) = #externalMacro(module: "ViewMacros", type: "ViewMacro")

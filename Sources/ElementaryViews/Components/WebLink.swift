@@ -6,14 +6,12 @@ import ElementaryUI
 
 /// A hyperlink view. Named `WebLink` to avoid conflict with HTML `a` element.
 /// Equivalent to SwiftUI's `Link`.
-@PublicView
+@PublicView(.a)
 public struct WebLink<Label: View> {
 
     let destination: String
     let label: Label
     let opensInNewTab: Bool
-
-    public typealias Tag = HTMLTag.a
 
     public init(destination: String, opensInNewTab: Bool = false, @HTMLBuilder label: () -> Label) {
         self.destination = destination
