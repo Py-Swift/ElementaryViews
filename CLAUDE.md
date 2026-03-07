@@ -92,7 +92,7 @@ Follows ElementaryUI patterns (same as SwiftUI):
 
 - **ALWAYS create tests for new view components** — no exceptions
 - **Verify tests pass** before considering work complete
-- **Commit one successful view/component at a time**
+- **Commit/Push one successful view/component at a time**
 
 ### Test Strategy
 

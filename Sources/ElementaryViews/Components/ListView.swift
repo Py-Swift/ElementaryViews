@@ -6,13 +6,11 @@ import ElementaryUI
 
 /// A list container that renders items in a vertical stack with optional dividers.
 /// Equivalent to SwiftUI's `List` for simple static content.
-@PublicView
+@PublicView(.ul)
 public struct ListView<ListContent: View> {
 
     let listContent: ListContent
     let divided: Bool
-
-    public typealias Tag = HTMLTag.ul
 
     public init(
         divided: Bool = false,

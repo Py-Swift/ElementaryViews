@@ -18,7 +18,7 @@ public struct SelectField<T: RawRepresentable & CaseIterable & Equatable> where 
         div(.class("flex items-center gap-4 py-1")) {
             label(.class("w-40 text-sm font-medium text-gray-600 text-right")) { fieldLabel }
             select(.class("flex-1 border border-gray-300 rounded px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent")) {
-                for item in T.allCases {
+                ForEach(T.allCases, key: \.rawValue) { item in
                     if item == selection {
                         option(.value(item.rawValue), .selected) { item.rawValue }
                     } else {
