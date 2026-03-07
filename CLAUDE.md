@@ -117,10 +117,23 @@ func HTMLExpect(_ html: some HTML, toBe expected: String) {
 ```
 Sources/
   ElementaryViews/
-    ViewMacros.swift          — Macro declarations + phantom types
-    ViewModifiers.swift       — View extension methods
-    Components/               — @PublicView component structs
-    Enums/                    — CSS helper types (CSSFontInfo, CSSColorKey, etc.)
+    Macro/                    — Macro declarations + phantom types
+      ViewMacros.swift
+    Modifier/                 — View extension methods
+      ViewModifiers.swift
+    Graphic/                  — CSS helper types (CSSFontInfo, CSSColorKey, etc.)
+    View/
+      Text/                   — Text, Label, Badge, BorderedLabel, RowSymbols
+      Input/                  — TextField, SecureField, TextEditor, SelectField
+      Control/                — Button, Slider, Stepper, SegmentedPicker
+      Toggle/                 — Toggle
+      Scroll/                 — ScrollView
+      Image/                  — WebImage
+      Navigation/             — NavigationLink, WebLink
+      Container/              — Form, Section, ListView, TabView
+      Overlay/                — AlertDialog, DropdownMenu, ProgressView
+    Layout/
+      Separator/              — Spacer, Divider
   ViewMacros/
     LayoutMacros.swift        — Macro implementations
     ViewMacro.swift           — @PublicView/@View macro implementation
