@@ -197,4 +197,40 @@ struct ComponentHTMLTests {
         let html = textarea(.class(cls), .custom(name: "rows", value: "4"), .placeholder("Enter text")) { "content" }
         HTMLExpect(html, toBe: #"<textarea class="w-full resize-y border border-gray-200 rounded px-3 py-1.5 text-sm " rows="4" placeholder="Enter text">content</textarea>"#)
     }
+
+    // MARK: - ScrollView
+
+    @Test func scrollViewVertical() {
+        let html = div(.class("overflow-y-auto")) { p { "scrollable" } }
+        HTMLExpect(html, toBe: #"<div class="overflow-y-auto"><p>scrollable</p></div>"#)
+    }
+
+    @Test func scrollViewHorizontal() {
+        let html = div(.class("overflow-x-auto")) { p { "scrollable" } }
+        HTMLExpect(html, toBe: #"<div class="overflow-x-auto"><p>scrollable</p></div>"#)
+    }
+
+    @Test func scrollViewBoth() {
+        let html = div(.class("overflow-auto")) { p { "scrollable" } }
+        HTMLExpect(html, toBe: #"<div class="overflow-auto"><p>scrollable</p></div>"#)
+    }
+
+    // MARK: - Section
+
+    @Test func sectionStructure() {
+        let html = section(.class("space-y-2")) {
+            div(.class("font-semibold text-sm text-gray-700")) {
+                span(.class("text-sm")) { "Title" }
+            }
+            p { "content" }
+        }
+        HTMLExpect(html, toBe: #"<section class="space-y-2"><div class="font-semibold text-sm text-gray-700"><span class="text-sm">Title</span></div><p>content</p></section>"#)
+    }
+
+    // MARK: - Form
+
+    @Test func formStructure() {
+        let html = form(.class("flex flex-col gap-4")) { p { "field" } }
+        HTMLExpect(html, toBe: #"<form class="flex flex-col gap-4"><p>field</p></form>"#)
+    }
 }
