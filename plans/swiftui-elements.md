@@ -87,5 +87,8 @@ also make a Claude Agent file for generale promoting in the future with rule set
 
 apis in the research folder.
 
+# some makn rules to follows
+* ALWAYS MAKE TESTS FOR NEW VIEW COMPONENTS..
+* Verify tests passes before committing changes
+* Commit one Successfull view/component at the time
 
-ALWAYS MAKE TESTS FOR NEW VIEW COMPONENTS..
