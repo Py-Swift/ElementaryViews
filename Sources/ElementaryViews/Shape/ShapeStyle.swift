@@ -35,13 +35,10 @@ public protocol ShapeStyle: Sendable, CustomStringConvertible {
     /// - `"text-blue-500"` for `.text`
     /// - `"bg-blue-500"` for `.background`
     /// - `"border-blue-500"` for `.border`
-    //func cssClass(for role: CSSStyleRole) -> String
     
     associatedtype Resolved : ShapeStyle = Never
     
     func resolve(in environment: EnvironmentValues?, for role: CSSStyleRole) -> Self.Resolved
-    
-    
 }
 
 extension StringProtocol where Self: ShapeStyle {
@@ -52,14 +49,37 @@ extension StringProtocol where Self: ShapeStyle {
 
 extension String: ShapeStyle {}
 
+// MARK: - Static Style Accessors
 
-//extension CustomStringConvertible where Self: ShapeStyle {
-//    public func resolve(in environment: EnvironmentValues, for role: CSSStyleRole) -> Self.Resolved {
-//
-//    }
-//}
+extension ShapeStyle where Self == ForegroundStyle {
+    /// The foreground style in the current context.
+    public static var foreground: ForegroundStyle { ForegroundStyle() }
+}
 
-//extension String: ShapeStyle {
-//    
-//}
+extension ShapeStyle where Self == BackgroundStyle {
+    /// The background style in the current context.
+    public static var background: BackgroundStyle { BackgroundStyle() }
+}
+
+extension ShapeStyle where Self == HierarchicalShapeStyle {
+    /// A shape style that maps to the first level of the current content style.
+    public static var primary: HierarchicalShapeStyle { HierarchicalShapeStyle(level: 1) }
+
+    /// A shape style that maps to the second level of the current content style.
+    public static var secondary: HierarchicalShapeStyle { HierarchicalShapeStyle(level: 2) }
+
+    /// A shape style that maps to the third level of the current content style.
+    public static var tertiary: HierarchicalShapeStyle { HierarchicalShapeStyle(level: 3) }
+
+    /// A shape style that maps to the fourth level of the current content style.
+    public static var quaternary: HierarchicalShapeStyle { HierarchicalShapeStyle(level: 4) }
+
+    /// A shape style that maps to the fifth level of the current content style.
+    public static var quinary: HierarchicalShapeStyle { HierarchicalShapeStyle(level: 5) }
+}
+
+extension ShapeStyle where Self == TintShapeStyle {
+    /// A style that reflects the current tint color.
+    public static var tint: TintShapeStyle { TintShapeStyle() }
+}
 

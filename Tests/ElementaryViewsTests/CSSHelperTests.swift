@@ -266,4 +266,138 @@ struct CSSHelperTests {
         #expect(a == b)
         #expect(a.hashValue == b.hashValue)
     }
+
+    // MARK: - ForegroundStyle
+
+    @Test func foregroundStyleDescription() {
+        let style = ForegroundStyle()
+        #expect(style.description == "current")
+    }
+
+    @Test func foregroundStyleResolvedCSS() {
+        let style = ForegroundStyle()
+        #expect(style.resolve(in: nil, for: .text).description == "text-current")
+        #expect(style.resolve(in: nil, for: .background).description == "bg-current")
+    }
+
+    @Test func foregroundStyleStaticAccessor() {
+        // Verify `.foreground` static accessor works
+        let style: ForegroundStyle = .foreground
+        #expect(style.description == "current")
+    }
+
+    // MARK: - BackgroundStyle
+
+    @Test func backgroundStyleDescription() {
+        let style = BackgroundStyle()
+        #expect(style.description == "inherit")
+    }
+
+    @Test func backgroundStyleResolvedCSS() {
+        let style = BackgroundStyle()
+        #expect(style.resolve(in: nil, for: .background).description == "bg-inherit")
+        #expect(style.resolve(in: nil, for: .text).description == "text-inherit")
+    }
+
+    @Test func backgroundStyleStaticAccessor() {
+        let style: BackgroundStyle = .background
+        #expect(style.description == "inherit")
+    }
+
+    // MARK: - HierarchicalShapeStyle
+
+    @Test func hierarchicalPrimaryDescription() {
+        #expect(HierarchicalShapeStyle.primary.description == "opacity-100")
+    }
+
+    @Test func hierarchicalSecondaryDescription() {
+        #expect(HierarchicalShapeStyle.secondary.description == "opacity-60")
+    }
+
+    @Test func hierarchicalTertiaryDescription() {
+        #expect(HierarchicalShapeStyle.tertiary.description == "opacity-40")
+    }
+
+    @Test func hierarchicalQuaternaryDescription() {
+        #expect(HierarchicalShapeStyle.quaternary.description == "opacity-25")
+    }
+
+    @Test func hierarchicalQuinaryDescription() {
+        #expect(HierarchicalShapeStyle.quinary.description == "opacity-15")
+    }
+
+    @Test func hierarchicalStaticAccessors() {
+        let primary: HierarchicalShapeStyle = .primary
+        let secondary: HierarchicalShapeStyle = .secondary
+        #expect(primary.description == "opacity-100")
+        #expect(secondary.description == "opacity-60")
+    }
+
+    @Test func hierarchicalResolvedCSS() {
+        // For hierarchical styles, the resolved CSS is role-prefixed description
+        let style = HierarchicalShapeStyle.secondary
+        #expect(style.resolve(in: nil, for: .text).description == "text-opacity-60")
+    }
+
+    // MARK: - TintShapeStyle
+
+    @Test func tintShapeStyleDescription() {
+        let style = TintShapeStyle()
+        #expect(style.description == "accent")
+    }
+
+    @Test func tintShapeStyleResolvedCSS() {
+        let style = TintShapeStyle()
+        #expect(style.resolve(in: nil, for: .text).description == "text-accent")
+        #expect(style.resolve(in: nil, for: .background).description == "bg-accent")
+    }
+
+    @Test func tintStaticAccessor() {
+        let style: TintShapeStyle = .tint
+        #expect(style.description == "accent")
+    }
+
+    // MARK: - FillShapeStyle
+
+    @Test func fillShapeStyleDescription() {
+        let style = FillShapeStyle()
+        #expect(style.description == "current")
+    }
+
+    @Test func fillShapeStyleResolvedCSS() {
+        let style = FillShapeStyle()
+        #expect(style.resolve(in: nil, for: .fill).description == "fill-current")
+        #expect(style.resolve(in: nil, for: .stroke).description == "stroke-current")
+    }
+
+    // MARK: - AnyShapeStyle
+
+    @Test func anyShapeStyleWithColor() {
+        let style = AnyShapeStyle(Color.red)
+        #expect(style.description == "#ff3b30")
+        #expect(style.resolve(in: nil, for: .text).description == "text-[#ff3b30]")
+    }
+
+    @Test func anyShapeStyleWithColorKey() {
+        let style = AnyShapeStyle(CSSColorKey.blue_500)
+        #expect(style.description == "blue-500")
+        #expect(style.resolve(in: nil, for: .background).description == "bg-blue-500")
+    }
+
+    @Test func anyShapeStyleWithForegroundStyle() {
+        let style = AnyShapeStyle(ForegroundStyle())
+        #expect(style.description == "current")
+        #expect(style.resolve(in: nil, for: .text).description == "text-current")
+    }
+
+    // MARK: - CSSStyleRole
+
+    @Test func cssStyleRoleRawValues() {
+        #expect(CSSStyleRole.text.rawValue == "text")
+        #expect(CSSStyleRole.background.rawValue == "bg")
+        #expect(CSSStyleRole.border.rawValue == "border")
+        #expect(CSSStyleRole.ring.rawValue == "ring")
+        #expect(CSSStyleRole.fill.rawValue == "fill")
+        #expect(CSSStyleRole.stroke.rawValue == "stroke")
+    }
 }
