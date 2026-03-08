@@ -3,6 +3,7 @@
 //  ElementaryViews
 //
 import ElementaryUI
+import Foundation
 
 extension HTMLAttribute where Tag == HTMLTag.button {
     public static var defaultRed: Self {
@@ -11,12 +12,46 @@ extension HTMLAttribute where Tag == HTMLTag.button {
 }
 
 @PublicView
+public struct __Button {
+    
+    let text: String
+    let onClick: () -> Void
+    
+    //@State private var updateCount = 0
+    
+    
+//    public init(@HTMLBuilder label: () -> Label, onClick: @escaping () -> Void) {
+//        self.label = label()
+//        self.onClick = onClick
+//    }
+//    
+//    public init(label: Label, onClick: @escaping () -> Void) {
+//        self.label = label
+//        self.onClick = onClick
+//    }
+    
+    public init(text: String, onClick: @escaping () -> Void)  {
+        self.text = text
+        self.onClick = onClick
+    }
+    
+    public var body: some View {
+        button { text }
+//            .onClick {
+//                onClick()
+//                //updateCount += 1
+//            }
+    }
+}
+
+@PublicView(.button)
 public struct Button<Label: View> {
 
     let label: Label
     let onClick: () -> Void
-
-    public typealias Tag = HTMLTag.button
+    
+    @State private var updateCount = 0
+    
 
     public init(@HTMLBuilder label: () -> Label, onClick: @escaping () -> Void) {
         self.label = label()
@@ -28,13 +63,20 @@ public struct Button<Label: View> {
         self.onClick = onClick
     }
 
-    public init(text: Label, onClick: @escaping () -> Void) where Label: StringProtocol {
-        self.label = text
+    public init(text: String, onClick: @escaping () -> Void) where Label == Text {
+        self.label = Text(text)
         self.onClick = onClick
     }
 
     public var body: some View {
         button { label }
-            .onClick(onClick)
+            .onClick {
+                onClick()
+                updateCount += 1
+            }
     }
+}
+
+extension Button {
+    //public typealias Tag = HTMLTag.button
 }

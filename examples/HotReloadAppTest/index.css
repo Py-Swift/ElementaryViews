@@ -1,0 +1,14 @@
+@import "tailwindcss";
+
+/* Scan Swift sources for Tailwind class names */
+@source "./Sources/**/*.swift";
+@source "../../Sources/**/*.swift";
+
+body {
+    @apply min-h-screen bg-gray-900 text-white p-8;
+    font-family: system-ui, -apple-system, sans-serif;
+}
+
+body > div {
+    @apply max-w-2xl mx-auto;
+}

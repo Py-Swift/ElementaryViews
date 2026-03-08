@@ -149,15 +149,21 @@ extension ViewMacro: ExtensionMacro {
             let properties = members
                 .lazy
                 .filter { $0.isStoredProperty }
-                .filter { !$0.hasAnyAttribute(named: skippableAttributesForEquating) }
+                .filter { !$0.hasAnyAttribute(named: skippableAttributesForEquating)}
 
             let shouldNotEvenTry = properties.contains(where: { $0.isKnownToBeClosure })
 
             if !shouldNotEvenTry {
                 let propDecls = properties.map { property in
+                    
                     let shouldUnderscore = property.hasAnyAttribute(named: wrappingAttributesForEquating)
 
                     let name = shouldUnderscore ? "_\(property.trimmedIdentifier!.text)" : property.trimmedIdentifier!.text
+                    
+                    if property.isKnownToBeColor {
+                        return DeclSyntax("&& (a.\(raw: name) == b.\(raw: name))")
+                    }
+                    
                     return DeclSyntax("&& __ViewProperty.areKnownEqual(a.\(raw: name), b.\(raw: name))")
                 }
 
@@ -249,6 +255,18 @@ extension VariableDeclSyntax {
             }
         }
         return true
+    }
+    
+    var isKnownToBeColor: Bool {
+        guard var type = bindings.first?.typeAnnotation?.type else { return false }
+        
+        if let optType = type.as(OptionalTypeSyntax.self) {
+            type = optType.wrappedType
+        } else if let optType = type.as(ImplicitlyUnwrappedOptionalTypeSyntax.self) {
+            type = optType.wrappedType
+        }
+        
+        return type.trimmedDescription == "Color"
     }
 
     var isKnownToBeClosure: Bool {

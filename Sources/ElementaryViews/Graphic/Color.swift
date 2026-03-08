@@ -16,7 +16,8 @@ import ElementaryUI
 /// custom.cssClass(for: .text)       // "text-[#3380cc]"
 /// Color.red.cssClass(for: .background) // "bg-[#ff3b30]"
 /// ```
-public struct Color: ShapeStyle, Hashable, Sendable {
+@PublicView()
+public struct Color: ShapeStyle, Sendable, Hashable {
 
     // MARK: - Stored Properties
 
@@ -104,6 +105,10 @@ public struct Color: ShapeStyle, Hashable, Sendable {
         }
     }
 
+    public var body: some View {
+        // When Color is rendered directly as a view, produce a rect with the appropriate background color.
+        div(.class("flex-1 w-full min-h-[44px]"), .style("background-color: \(hexString)")) {}
+    }
     // MARK: - ShapeStyle
 
     /// Returns a Tailwind CSS arbitrary-value class for this color in the given role.
@@ -135,6 +140,8 @@ public struct Color: ShapeStyle, Hashable, Sendable {
         "\(role.rawValue)-[\(self)]"
     }
 }
+
+
 
 extension Color: CustomStringConvertible {
     public var description: String {
@@ -197,3 +204,6 @@ extension Color {
     /// Fully transparent.
     public static let clear = Color(white: 0.0, opacity: 0.0)
 }
+
+
+
