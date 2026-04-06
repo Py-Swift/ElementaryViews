@@ -4,46 +4,26 @@
 //
 import ElementaryUI
 
-@PublicView(.div)
-public struct ScrollView<ScrollContent: View> {
+public enum ScrollViewAxis: Sendable {
+    case vertical
+    case horizontal
+    case both
+}
 
-    let axis: Axis
-    let showsIndicators: Bool
-    let scrollContent: ScrollContent
-
-    public init(
-        _ axis: Axis = .vertical,
-        showsIndicators: Bool = true,
-        @HTMLBuilder content: () -> ScrollContent
-    ) {
-        self.axis = axis
-        self.showsIndicators = showsIndicators
-        self.scrollContent = content()
+public func ScrollView<C: View>(
+    _ axis: ScrollViewAxis = .vertical,
+    showsIndicators: Bool = true,
+    @HTMLBuilder content: () -> C
+) -> some View {
+    let overflow: String
+    switch axis {
+    case .vertical:   overflow = "overflow-y-auto"
+    case .horizontal: overflow = "overflow-x-auto"
+    case .both:       overflow = "overflow-auto"
     }
-
-    private var overflowClass: String {
-        switch axis {
-        case .vertical: "overflow-y-auto"
-        case .horizontal: "overflow-x-auto"
-        case .both: "overflow-auto"
-        }
-    }
-
-    private var scrollbarClass: String {
-        showsIndicators ? "" : " scrollbar-hide"
-    }
-
-    public var body: some View {
-        div(.class("\(overflowClass)\(scrollbarClass)")) {
-            scrollContent
-        }
+    let scrollbarClass = showsIndicators ? "" : " scrollbar-hide"
+    return div(.class("\(overflow)\(scrollbarClass)")) {
+        content()
     }
 }
 
-extension ScrollView {
-    public enum Axis: Sendable {
-        case vertical
-        case horizontal
-        case both
-    }
-}

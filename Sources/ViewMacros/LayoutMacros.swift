@@ -358,6 +358,126 @@ public struct TableCellMacro: ExpressionMacro {
     }
 }
 
+// MARK: - Button
+
+public struct ButtonMacro: ExpressionMacro {
+    public static func expansion(
+        of node: some FreestandingMacroExpansionSyntax,
+        in context: some MacroExpansionContext
+    ) throws -> ExprSyntax {
+        guard let trailingClosure = node.trailingClosure else {
+            throw MacroError("Button requires a trailing closure")
+        }
+        let stmts = trailingClosure.statements
+        return """
+        button {
+        \(stmts)
+        }
+        """
+    }
+}
+
+// MARK: - ListView
+
+public struct ListViewMacro: ExpressionMacro {
+    public static func expansion(
+        of node: some FreestandingMacroExpansionSyntax,
+        in context: some MacroExpansionContext
+    ) throws -> ExprSyntax {
+        guard let trailingClosure = node.trailingClosure else {
+            throw MacroError("ListView requires a trailing closure")
+        }
+        var divided = false
+        for arg in node.arguments {
+            if arg.label?.text == "divided",
+               let boolLit = arg.expression.as(BooleanLiteralExprSyntax.self) {
+                divided = boolLit.literal.tokenKind == .keyword(.true)
+            }
+        }
+        let divideClass = divided ? " divide-y divide-gray-200" : ""
+        let stmts = trailingClosure.statements
+        return """
+        ul(.class("flex flex-col\(raw: divideClass)")) {
+        \(stmts)
+        }
+        """
+    }
+}
+
+// MARK: - Toggle
+
+public struct ToggleMacro: ExpressionMacro {
+    public static func expansion(
+        of node: some FreestandingMacroExpansionSyntax,
+        in context: some MacroExpansionContext
+    ) throws -> ExprSyntax {
+        guard let isOnArg = node.arguments.first(where: { $0.label?.text == "isOn" }) else {
+            throw MacroError("Toggle requires an 'isOn:' argument")
+        }
+        guard let trailingClosure = node.trailingClosure else {
+            throw MacroError("Toggle requires a trailing closure for the label")
+        }
+        let isOnExpr = isOnArg.expression
+        let stmts = trailingClosure.statements
+        return """
+        Elementary.label(.class("inline-flex items-center gap-2 cursor-pointer")) {
+            input(.type(.checkbox), .class("sr-only peer"))
+                .bindChecked(\(isOnExpr))
+            div(.class("relative w-11 h-6 bg-gray-200 peer-checked:bg-blue-500 rounded-full after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-full")) {}
+            span(.class("text-sm")) {
+        \(stmts)
+            }
+        }
+        """
+    }
+}
+
+// MARK: - NavigationStack
+
+public struct NavigationStackMacro: ExpressionMacro {
+    public static func expansion(
+        of node: some FreestandingMacroExpansionSyntax,
+        in context: some MacroExpansionContext
+    ) throws -> ExprSyntax {
+        guard let pathArg = node.arguments.first(where: { $0.label?.text == "path" }) else {
+            throw MacroError("NavigationStack requires a 'path:' argument")
+        }
+        guard let rootClosure = node.trailingClosure else {
+            throw MacroError("NavigationStack requires a root trailing closure")
+        }
+        guard let destClosure = node.additionalTrailingClosures
+            .first(where: { $0.label.text == "destination" })?.closure else {
+            throw MacroError("NavigationStack requires a 'destination:' trailing closure")
+        }
+
+        let pathExpr = pathArg.expression
+        let rootStmts = rootClosure.statements
+        let destStmts = destClosure.statements
+
+        var paramName = "current"
+        if let sig = destClosure.signature {
+            switch sig.parameterClause {
+            case .simpleInput(let params):
+                if let first = params.first { paramName = first.name.text }
+            case .parameterClause(let clause):
+                if let first = clause.parameters.first { paramName = first.firstName.text }
+            @unknown default:
+                break
+            }
+        }
+
+        return """
+        div {
+            if let \(raw: paramName) = (\(pathExpr)).wrappedValue.last {
+        \(destStmts)
+            } else {
+        \(rootStmts)
+            }
+        }
+        """
+    }
+}
+
 // MARK: - Error
 
 struct MacroError: Error, CustomStringConvertible {
@@ -376,7 +496,9 @@ struct ViewMacrosPlugin: CompilerPlugin {
         TableMacro.self,
         TableRowMacro.self,
         TableCellMacro.self,
-        
+        ButtonMacro.self,
+        ListViewMacro.self,
+
         ViewMacro.self
     ]
 }

@@ -6,35 +6,18 @@ import ElementaryUI
 
 /// A container that switches between child views using a tab bar.
 /// Similar to SwiftUI's `TabView` with a horizontal tab bar.
-@PublicView(.div)
-public struct TabView<TabContent: View> {
-
-    let tabItems: [TabItem]
-    let tabContent: TabContent
-
-    /// Creates a tab view with labeled tabs and content.
-    /// Mark the active tab by setting `isSelected: true` on the corresponding `TabItem`.
-    public init(
-        tabs: [TabItem],
-        @HTMLBuilder content: () -> TabContent
-    ) {
-        self.tabItems = tabs
-        self.tabContent = content()
-    }
-
-    public var body: some View {
-        div(.class("flex flex-col")) {
-            // Tab bar
-            div(.class("flex border-b border-gray-200")) {
-                ForEach(tabItems, key: \.title) { tab in
-                    TabButton(tab: tab)
-                }
+public func TabView<T: View>(
+    tabs: [TabItem],
+    @HTMLBuilder content: () -> T
+) -> some View {
+    div(.class("flex flex-col")) {
+        div(.class("flex border-b border-gray-200")) {
+            ForEach(tabs, key: \.title) { tab in
+                TabButton(tab: tab)
             }
-
-            // Content area
-            div(.class("p-4")) {
-                tabContent
-            }
+        }
+        div(.class("p-4")) {
+            content()
         }
     }
 }

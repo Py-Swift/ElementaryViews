@@ -99,7 +99,6 @@ public macro TableCell<T: HTML>(
     @HTMLBuilder _ body: () -> T
 ) -> HTMLElement<HTMLTag.td, T> = #externalMacro(module: "ViewMacros", type: "TableCellMacro")
 
-
 /// Phantom enum for specifying HTML tag types in `@PublicView`.
 /// Maps to `HTMLTag.xxx` via macro expansion.
 public enum ViewTag {

@@ -5,14 +5,6 @@
 import Elementary
 import ElementaryUI
 
-// MARK: - Internal helper: wrap a View in a Button
-extension View {
-
-    public consuming func _button(_ onClick: @escaping () -> Void) -> Button<Self> {
-        Button(label: self, onClick: onClick)
-    }
-}
-
 // MARK: - Tailwind CSS class-based view modifiers
 // These add Tailwind utility classes via `.attributes(.class(...))` without
 // adding extra DOM nodes. They preserve the original element's Tag identity.

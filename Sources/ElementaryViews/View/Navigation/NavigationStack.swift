@@ -4,6 +4,8 @@
 //
 import ElementaryUI
 
+/// Displays `root` when `path` is empty; otherwise renders `destination` for the topmost element.
+///
 /// A view that presents a stack of views over a root view, driven by a bound path.
 ///
 /// `NavigationStack` displays the root content when the path is empty, and
@@ -50,36 +52,17 @@ import ElementaryUI
 /// // Pop to root
 /// parks.removeAll()
 /// ```
-@PublicView
-public struct NavigationStack<Data: Hashable, Root: View, Detail: View> {
-
-    @Binding var path: [Data]
-    let root: Root
-    let destination: (Data) -> Detail
-
-    public typealias Tag = HTMLTag.div
-
-    /// Creates a navigation stack with a homogeneous typed path.
-    ///
-    /// - Parameters:
-    ///   - path: A binding to the array of data driving the stack.
-    ///   - root: The root content shown when the path is empty.
-    ///   - destination: A view builder that creates the detail view for a given data value.
-    public init(
-        path: Binding<[Data]>,
-        @HTMLBuilder root: () -> Root,
-        @HTMLBuilder destination: @escaping (Data) -> Detail
-    ) {
-        self._path = path
-        self.root = root()
-        self.destination = destination
-    }
-
-    public var body: some View {
-        if let current = path.last {
+public func NavigationStack<Data: Hashable, Root: View, Detail: View>(
+    path: Binding<[Data]>,
+    @HTMLBuilder root: () -> Root,
+    @HTMLBuilder destination: (Data) -> Detail
+) -> some View {
+    div {
+        if let current = path.wrappedValue.last {
             destination(current)
         } else {
-            root
+            root()
         }
     }
 }
+

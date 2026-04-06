@@ -4,29 +4,11 @@
 //
 import ElementaryUI
 
-/// A list container that renders items in a vertical stack with optional dividers.
-/// Equivalent to SwiftUI's `List` for simple static content.
-@PublicView(.ul)
-public struct ListView<ListContent: View> {
+/// Expands to a vertical `ul` list with optional dividers between items.
+@freestanding(expression)
+public macro ListView<T: HTML>(
+    divided: Bool = false,
+    @HTMLBuilder _ content: () -> T
+) -> HTMLElement<HTMLTag.ul, T> = #externalMacro(module: "ViewMacros", type: "ListViewMacro")
 
-    let listContent: ListContent
-    let divided: Bool
 
-    public init(
-        divided: Bool = false,
-        @HTMLBuilder content: () -> ListContent
-    ) {
-        self.listContent = content()
-        self.divided = divided
-    }
-
-    private var divideClass: String {
-        divided ? " divide-y divide-gray-200" : ""
-    }
-
-    public var body: some View {
-        ul(.class("flex flex-col\(divideClass)")) {
-            listContent
-        }
-    }
-}
