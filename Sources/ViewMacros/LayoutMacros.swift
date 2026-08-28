@@ -139,6 +139,58 @@ public struct VStackMacro: ExpressionMacro {
     }
 }
 
+// MARK: - Grid Macro
+
+private enum GridColumns: String {
+    case one, two, three, four, five, six
+
+    var css: String {
+        switch self {
+        case .one:   "md:grid-cols-1"
+        case .two:   "md:grid-cols-2"
+        case .three: "md:grid-cols-3"
+        case .four:  "md:grid-cols-4"
+        case .five:  "md:grid-cols-5"
+        case .six:   "md:grid-cols-6"
+        }
+    }
+}
+
+public struct GridMacro: ExpressionMacro {
+    public static func expansion(
+        of node: some FreestandingMacroExpansionSyntax,
+        in context: some MacroExpansionContext
+    ) throws -> ExprSyntax {
+        var columnsStr: String? = nil
+        var spacingStr: String? = nil
+
+        for arg in node.arguments {
+            switch arg.label?.text {
+            case "columns": columnsStr = extractEnumCase(from: arg.expression)
+            case "spacing": spacingStr = extractEnumCase(from: arg.expression)
+            default: break
+            }
+        }
+
+        let columns = GridColumns(rawValue: columnsStr ?? "two") ?? .two
+        let spacing = Spacing(rawValue: spacingStr ?? "md") ?? .md
+
+        let classes = "grid grid-cols-1 \(columns.css) \(spacing.css)"
+
+        guard let trailingClosure = node.trailingClosure else {
+            throw MacroError("Grid requires a trailing closure")
+        }
+
+        let stmts = trailingClosure.statements
+
+        return """
+        div(.class("\(raw: classes)")) {
+        \(stmts)
+        }
+        """
+    }
+}
+
 // MARK: - Border Macro
 
 private enum BorderColor: String {
@@ -372,6 +424,7 @@ struct ViewMacrosPlugin: CompilerPlugin {
     let providingMacros: [Macro.Type] = [
         HStackMacro.self,
         VStackMacro.self,
+        GridMacro.self,
         BorderMacro.self,
         TableMacro.self,
         TableRowMacro.self,

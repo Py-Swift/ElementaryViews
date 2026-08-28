@@ -20,7 +20,7 @@ import ElementaryUI
 /// // CSS mode — use shape as a clipping/styling view:
 /// Circle()
 ///     .backgroundStyle(Color.blue)
-///     .frame(width: "16", height: "16")
+///     .frame(width: 16, height: 16)
 ///
 /// // Canvas mode — draw shape on a canvas:
 /// let path = Circle().path(in: Rect(x: 0, y: 0, width: 100, height: 100))

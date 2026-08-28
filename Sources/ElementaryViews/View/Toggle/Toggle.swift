@@ -27,7 +27,7 @@ public struct Toggle<Label: View> {
             input(.type(.checkbox), .class("sr-only peer"))
                 .bindChecked($isOn)
             div(
-                .class("relative w-11 h-6 bg-gray-200 peer-checked:bg-blue-500 rounded-full after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:after:translate-x-full")
+                .class("relative w-9 h-5 bg-gray-200 dark:bg-gray-700 peer-checked:bg-indigo-600 rounded-full after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:after:translate-x-full")
             ) {}
             span(.class("text-sm")) { label }
         }

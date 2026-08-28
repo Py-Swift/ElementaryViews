@@ -90,6 +90,27 @@ struct RotatedScaleColor {
     }
 }
 
+@PublicView()
+struct AnimatedRed {
+    @State var redState: Double
+    let animation: Animation?
+    let age: Int
+    
+    var body: some View {
+        Color(red: redState, green: 1, blue: 0)
+            
+            .onClick {
+                withAnimation(animation) {
+                    if redState == 0 {
+                        redState = 1
+                    } else {
+                        redState = 0
+                    }
+                }
+            }
+    }
+}
+
 @PublicView
 struct ColorViewTest {
     let color: Color
@@ -131,7 +152,7 @@ struct ColorViewTest {
                 }
             }
             
-            color
+            AnimatedRed(animation: .smooth(duration: 1))
             RotatedColor(color: .yellow, animation: .smooth(duration: 0.5, extraBounce: 0.3))
             ScalableColor(color: .orange, animation: .snappy(duration: 0.5, extraBounce: 0.3))
             RotatedScaleColor(color: color, animation: .snappy(duration: 0.5, extraBounce: 0.5))

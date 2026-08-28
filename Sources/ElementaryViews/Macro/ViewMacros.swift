@@ -19,6 +19,10 @@ public enum LayoutSpacing {
     case none, xs, sm, md, lg, xl
 }
 
+public enum GridColumns {
+    case one, two, three, four, five, six
+}
+
 public enum BorderColor {
     case gray200, gray300, gray400, gray500, gray600, gray700
     case blue300, blue500
@@ -37,6 +41,13 @@ public enum BorderPadding {
 // MARK: - Macro Declarations
 
 /// Expands to `div(.class("flex flex-row {alignment} {spacing}")) { ... }`
+/// - Warning: Cannot nest inside another `#HStack`. A freestanding expression
+///   macro may not appear anywhere in its own expansion stack, and the
+///   expansion necessarily contains the inner invocation, so Swift rejects
+///   it with "recursive expansion of macro" — even with a different macro
+///   in between. Use the `HStack` view type instead, which renders the same
+///   markup and nests to any depth.
+@available(*, deprecated, message: "Use the HStack view type — the macro cannot nest inside itself.")
 @freestanding(expression)
 public macro HStack<T: HTML>(
     alignment: HStackAlignment = .center,
@@ -46,12 +57,36 @@ public macro HStack<T: HTML>(
 ) -> HTMLElement<HTMLTag.div, T> = #externalMacro(module: "ViewMacros", type: "HStackMacro")
 
 /// Expands to `div(.class("flex flex-col {alignment} {spacing}")) { ... }`
+/// - Warning: Cannot nest inside another `#VStack`. A freestanding expression
+///   macro may not appear anywhere in its own expansion stack, and the
+///   expansion necessarily contains the inner invocation, so Swift rejects
+///   it with "recursive expansion of macro" — even with a different macro
+///   in between. Use the `VStack` view type instead, which renders the same
+///   markup and nests to any depth.
+@available(*, deprecated, message: "Use the VStack view type — the macro cannot nest inside itself.")
 @freestanding(expression)
 public macro VStack<T: HTML>(
     alignment: VStackAlignment = .stretch,
     spacing: LayoutSpacing = .md,
     @HTMLBuilder _ body: () -> T
 ) -> HTMLElement<HTMLTag.div, T> = #externalMacro(module: "ViewMacros", type: "VStackMacro")
+
+/// Expands to `div(.class("grid grid-cols-1 md:grid-cols-{columns} {spacing}")) { ... }`
+/// Single column below the `md` breakpoint, `columns` columns at/above it —
+/// matches SwiftUI's `Grid`/`LazyVGrid` role for a responsive field layout.
+/// - Warning: Cannot nest inside another `#Grid`. A freestanding expression
+///   macro may not appear anywhere in its own expansion stack, and the
+///   expansion necessarily contains the inner invocation, so Swift rejects
+///   it with "recursive expansion of macro" — even with a different macro
+///   in between. Use the `Grid` view type instead, which renders the same
+///   markup and nests to any depth.
+@available(*, deprecated, message: "Use the Grid view type — the macro cannot nest inside itself.")
+@freestanding(expression)
+public macro Grid<T: HTML>(
+    columns: GridColumns = .two,
+    spacing: LayoutSpacing = .md,
+    @HTMLBuilder _ body: () -> T
+) -> HTMLElement<HTMLTag.div, T> = #externalMacro(module: "ViewMacros", type: "GridMacro")
 
 /// Expands to `div(.class("border {color} {radius} {padding}")) { ... }`
 @freestanding(expression)

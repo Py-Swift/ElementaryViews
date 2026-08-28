@@ -66,7 +66,7 @@ struct ViewModifierTests {
 
     @Test func paddingModifier() {
         let html = div { "content" }.padding(CSSPadding(px: 4, py: 2.0))
-        HTMLExpect(html, toBe: #"<div class="px-4 py-2.0">content</div>"#)
+        HTMLExpect(html, toBe: #"<div class="px-4 py-2">content</div>"#)
     }
 
     @Test func cornerRadiusModifier() {
@@ -74,19 +74,36 @@ struct ViewModifierTests {
         HTMLExpect(html, toBe: #"<div class="rounded-lg">content</div>"#)
     }
 
+    // `frame` takes pixel values and emits Tailwind arbitrary-value classes
+    // (`w-[64px]`), not scale tokens — these tests previously called a
+    // `frame(width: String)` overload that no longer exists.
+
     @Test func frameWidthAndHeight() {
-        let html = div { "content" }.frame(width: "64", height: "32")
-        HTMLExpect(html, toBe: #"<div class="w-64 h-32">content</div>"#)
+        let html = div { "content" }.frame(width: 64, height: 32)
+        HTMLExpect(html, toBe: #"<div class="w-[64px] h-[32px]">content</div>"#)
     }
 
     @Test func frameWidthOnly() {
-        let html = div { "content" }.frame(width: "full")
-        HTMLExpect(html, toBe: #"<div class="w-full">content</div>"#)
+        let html = div { "content" }.frame(width: 240)
+        HTMLExpect(html, toBe: #"<div class="w-[240px]">content</div>"#)
     }
 
     @Test func frameHeightOnly() {
-        let html = div { "content" }.frame(height: "screen")
-        HTMLExpect(html, toBe: #"<div class="h-screen">content</div>"#)
+        let html = div { "content" }.frame(height: 100)
+        HTMLExpect(html, toBe: #"<div class="h-[100px]">content</div>"#)
+    }
+
+    /// A whole-valued `Double` must not render as `240.0px` — see
+    /// `pxToken(_:)`. This is the reason the modifier has both a
+    /// `BinaryInteger` and a `BinaryFloatingPoint` overload.
+    @Test func frameWholeFloatDropsDecimal() {
+        let html = div { "content" }.frame(width: 240.0)
+        HTMLExpect(html, toBe: #"<div class="w-[240px]">content</div>"#)
+    }
+
+    @Test func frameFractionalFloatKeepsDecimal() {
+        let html = div { "content" }.frame(width: 240.5)
+        HTMLExpect(html, toBe: #"<div class="w-[240.5px]">content</div>"#)
     }
 
     // MARK: - Effects
@@ -141,7 +158,7 @@ struct ViewModifierTests {
             .cornerRadius(.md)
             .shadow(.sm)
             .background(.gray_100)
-        HTMLExpect(html, toBe: #"<div class="px-2 py-1.0 rounded-md shadow-sm bg-gray-100">box</div>"#)
+        HTMLExpect(html, toBe: #"<div class="px-2 py-1 rounded-md shadow-sm bg-gray-100">box</div>"#)
     }
 
     // MARK: - ShapeStyle Modifiers

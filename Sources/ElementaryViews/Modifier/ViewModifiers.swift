@@ -109,13 +109,35 @@ extension HTML where Tag: HTMLTrait.Attributes.Global {
         attributes(.class(radius.rawValue))
     }
 
-    /// Sets width and/or height via Tailwind classes.
-    /// Pass Tailwind size tokens like `"full"`, `"screen"`, `"64"`, `"auto"`, `"fit"`, or arbitrary values like `"[200px]"`.
-    public func frame(width: String? = nil, height: String? = nil) -> _AttributedElement<Self> {
+    /// Sets width and/or height, in pixels — mirrors SwiftUI's
+    /// `.frame(width: CGFloat?, height: CGFloat?)`. Emits a Tailwind
+    /// arbitrary-value class (`w-[240px]`), so any pixel value works, not
+    /// just Tailwind's fixed spacing scale. Generic over `BinaryFloatingPoint`
+    /// and (below) `BinaryInteger` rather than a single concrete `Double`, so
+    /// both `.frame(width: 240)` and `.frame(width: 240.0)` resolve without
+    /// forcing a manual `Double(...)` cast at the call site — an integer
+    /// literal's default type (`Int`) conforms to `BinaryInteger` but not
+    /// `BinaryFloatingPoint`, so the two overloads never collide.
+    public func frame<T: BinaryFloatingPoint>(width: T? = nil, height: T? = nil) -> _AttributedElement<Self> {
         var classes: [String] = []
-        if let width { classes.append("w-\(width)") }
-        if let height { classes.append("h-\(height)") }
+        if let width { classes.append("w-[\(Self.pxToken(Double(width)))]") }
+        if let height { classes.append("h-[\(Self.pxToken(Double(height)))]") }
         return attributes(.class(classes.joined(separator: " ")))
+    }
+
+    /// `BinaryInteger` counterpart of the overload above (`Int`, `UInt`, etc.).
+    public func frame<T: BinaryInteger>(width: T? = nil, height: T? = nil) -> _AttributedElement<Self> {
+        var classes: [String] = []
+        if let width { classes.append("w-[\(width)px]") }
+        if let height { classes.append("h-[\(height)px]") }
+        return attributes(.class(classes.joined(separator: " ")))
+    }
+
+    /// Formats a pixel value the way Tailwind's arbitrary-value classes
+    /// need: whole numbers with no decimal point (`240px`, not `240.0px`).
+    private static func pxToken(_ value: Double) -> String {
+        let rounded = Int(value)
+        return Double(rounded) == value ? "\(rounded)px" : "\(value)px"
     }
 
     // MARK: Effects

@@ -61,14 +61,23 @@ struct CSSHelperTests {
         #expect(p.css == "px-3 py-1.5")
     }
 
+    /// Whole `py` values render without a decimal point — `py-2.0` is not a
+    /// real Tailwind class and would silently drop the padding. See
+    /// `CSSPadding.token(_:)`.
     @Test func paddingCustom() {
         let p = CSSPadding(px: 4, py: 2.0)
-        #expect(p.css == "px-4 py-2.0")
+        #expect(p.css == "px-4 py-2")
     }
 
     @Test func paddingZero() {
         let p = CSSPadding.zero
-        #expect(p.css == "px-0 py-0.0")
+        #expect(p.css == "px-0 py-0")
+    }
+
+    /// Fractional values keep their decimal — `py-1.5` *is* a Tailwind class.
+    @Test func paddingFractional() {
+        let p = CSSPadding(px: 2, py: 2.5)
+        #expect(p.css == "px-2 py-2.5")
     }
 
     // MARK: - CSSBorderInfo
