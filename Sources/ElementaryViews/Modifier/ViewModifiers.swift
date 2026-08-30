@@ -165,4 +165,32 @@ extension HTML where Tag: HTMLTrait.Attributes.Global {
     public func border(_ border: CSSBorderInfo) -> _AttributedElement<Self> {
         attributes(.class(border.css))
     }
+
+    /// Draws a border in `content` around `edges`.
+    ///
+    /// SwiftUI's `View.border(_ content: S, width: CGFloat = 1)`
+    /// (`research/SwiftUI-api/SwiftUICore.swift`) with one addition: `edges`,
+    /// taking the same `Edge.Set` its `padding(_:_:)` does. SwiftUI has no
+    /// per-edge border because it has no separator utility; here a bottom
+    /// hairline under a tab bar is the common case, and `Edge.Set` is what
+    /// avoids a second, differently-named modifier for it.
+    ///
+    /// Unlike ``border(_:)-(CSSBorderInfo)`` this adds no corner radius and
+    /// accepts any `ShapeStyle` — including ``SchemeColor``, which is what
+    /// makes a border adapt to the color scheme:
+    ///
+    /// ```swift
+    /// div(.class("flex")) { … }.border(.separator, edges: .bottom)
+    /// ```
+    public func border(
+        _ content: some ShapeStyle,
+        width: Int = 1,
+        edges: Edge.Set = .all
+    ) -> _AttributedElement<Self> {
+        // Tailwind spells a 1px border as the bare utility (`border`,
+        // `border-b`); only wider ones carry the number.
+        let root = edges.utility("border")
+        let widthClass = width == 1 ? root : "\(root)-\(width)"
+        return attributes(.class("\(widthClass) \(content.resolve(in: nil, for: .border))"))
+    }
 }
